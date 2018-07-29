@@ -1,0 +1,32 @@
+{
+  "name": "jaguar-language",
+  "version": "0.0.0",
+  "description": "Jaguar Language, a fast modern programming language that compiles into javascript.",
+  "main": "./lib/jaguar/index",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "./bin/jake test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/stormburpee/jaguar.git"
+  },
+  "keywords": [
+    "javascript",
+    "language",
+    "jaguar",
+    "jaguar",
+    "language",
+    "compiler"
+  ],
+  "author": "Storm Burpee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/stormburpee/jaguar/issues"
+  },
+  "homepage": "https://gitlab.com/stormburpee/jaguar#README",
+  "dependencies": {
+  }
+}
