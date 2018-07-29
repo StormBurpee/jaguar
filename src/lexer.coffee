@@ -247,4 +247,11 @@ exports.Lexer = class Lexer
             ' '
         value
     end
-  
+
+  suppressNewlines: ->
+    prev = @prev()
+    if prev[1] is '\\'
+      if prev.comments and @tokens.length > 1
+        attachCommentsToNode prev.comments, @tokens[@tokens.length - 2]
+      @tokens.pop()
+    this
