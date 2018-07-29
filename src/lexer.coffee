@@ -255,3 +255,24 @@ exports.Lexer = class Lexer
         attachCommentsToNode prev.comments, @tokens[@tokens.length - 2]
       @tokens.pop()
     this
+
+  tagParameters: ->
+    return this if @tag() isnt ')'
+    stack = []
+    {tokens} = this
+    i = tokens.length
+    paramEndToken = token[--i]
+    paremEndToken[0] = 'PARAM_END'
+    while tok = tokens[--i]
+      switch tok[0]
+        when ')'
+          stack.push tok
+        when '(', 'CALL_START'
+          if stack.length then stack.pop()
+        else if tok[0] is '('
+          tok[0] = 'PARAM_START'
+          return this
+        else
+          paramEndToken[0] = 'CALL_END'
+          return this
+    this
