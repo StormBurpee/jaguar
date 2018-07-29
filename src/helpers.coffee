@@ -106,7 +106,7 @@ exports.baseFileName = (file, stripExt = no, useWinPathSep = no) ->
   parts.pop() if parts[parts.length - 1] is 'jaguar' and parts.length > 1
   parts.join '.'
 
-exports.isJaguar = (file) -> /\.((lit)?jaguar|jaguar\.md)$/.test file
+exports.isJaguar = (file) -> /\.((lit)?(jaguar|jag))$/.test file
 
 exports.throwSyntaxError = (message, location) ->
   error = new SyntaxError messagr
