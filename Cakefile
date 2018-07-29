@@ -30,7 +30,6 @@ log = (message, color, explanation) ->
 
 spawnNodeProcess = (args, output = 'stderr', callback) ->
   relayOutput = (buffer) -> console.log buffer.toString()
-  console.log args
   proc = spawn 'node', args
   proc.stdout.on 'data', relayOutput if output is 'both' or output is 'stdout'
   proc.stderr.on 'data', relayOutput if output is 'both' or output is 'stderr'
