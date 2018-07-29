@@ -88,7 +88,7 @@ exports.attachCommentsToNode = attachCommentsToNode = (comments, node) ->
 
 exports.locationDataToString = (obj) ->
   if ("2" of obj) and ("first_line" of obj[2]) then locationData = obj[2]
-else if "first_line" of obj then locationData = obj
+  else if "first_line" of obj then locationData = obj
 
 if locationData
   "#{locationData.first_line + 1}:#{locationData.first_column + 1}-" +
