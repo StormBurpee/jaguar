@@ -3,8 +3,8 @@ os                        = require 'os'
 path                      = require 'path'
 _                         = require 'underscore'
 { spawn, exec, execSync } = require 'child_process'
-#Jaguar                    = require './lib/jaguar'
-#helpers                   = require './lib/jaguar/helpers'
+Jaguar                    = require './lib/jaguar'
+helpers                   = require './lib/jaguar/helpers'
 
 # ANSI Terminal Colors.
 bold = red = green = yellow = reset = ''
