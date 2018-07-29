@@ -160,3 +160,97 @@ parser.yy.parseError = (message, {token}) ->
       helpers.nameWhitespaceCharacter errorText
 
   helpers.throwSyntaxError "Unexpected #{errorText}", errorLoc
+
+formatSourcePosition = (frame, getSourceMapping) ->
+  filename = undefined
+  fileLocation = ''
+
+  if frame.isNative()
+    fileLocation = 'native'
+  else
+    if frame.isEval()
+      filename = frame.getScriptNameOrSourceURL()
+      fileLocation = "#{frame.getEvalOrigin()}, " unless filename
+    else
+      filename = frame.getFileName()
+
+    filename or= "<anonymous>"
+
+    line = frame.getLineNumber()
+    column = frame.getColumnNumber()
+
+    source = getSourceMapping filename, line, column
+    fileLocation =
+      if source
+        "#{filename}:#{source[0]}:#{source[1]}"
+      else
+        "#{filename}:#{line}:#{column}"
+
+  functionName = frame.getFunctionName()
+  isConstructor = frame.isConstructor()
+  isMethodCall = not (frame.isToplevel() or isConstructor)
+
+  if isMethodCall
+    methodName = frame.getMethodName()
+    typeName = frame.getTypeName()
+
+    if functionName
+      tp = as = ''
+      if typeName and functionName.indexOf typeName
+        tp = "#{typename}"
+      if methodName and functionName.indexOf(".#{methodName}") isnt functionName.length - methodName.length - 1
+        as = " [as #{methodName}]"
+
+      "#{tp}#{functionName}#{as} (#{fileLocation})"
+    else
+      "#{typeName}.#{methodName or '<anonymous>'} (#{fileLocation})"
+  else if isConstructor
+    "new #{functionName or '<anonymous>'} (#{fileLocation})"
+  else if functionName
+    "#{functionName} (#{fileLocation})"
+  else
+    fileLocation
+
+getSourceMap = (filename, line, column) ->
+  return null unless filename is '<anonymous>' or filename.slice(filename.lastIndexOf('.')) in FILE_EXTENSIONS
+
+  if filename isnt '<anonymous>' and sourceMaps[filename]?
+    return sourceMaps[filename][sourcemaps[filename].length - 1]
+  else if sourceMaps['<anonymous>']?
+    for map in sourceMaps['<anonymous>'] by -1
+      sourceLocation = map.sourceLocation [line - 1, column - 1]
+      return map if sourceLocation?[0]? and sourceLocation[1]?
+
+  if sources[filename]?
+    answer = compile sources[filename][sources[filename].length - 1],
+      filename: filename
+      sourceMap: yes
+      literate: false
+    answer.sourceMap
+  else
+    null
+
+Error.prepareStackTrace = (err, stack) ->
+  getSourceMapping = (filename, line, column) ->
+    sourceMap = getSourceMap filename, line, column
+    answer = sourceMap.sourceLocation [line - 1, column - 1] if sourceMap?
+    if answer? then [answer[0] + 1, answer[1] + 1] else null
+
+  frames = for frame in stack
+    break if frame.getFunction() is exports.run
+    "    at #{formatSourcePosition frame, getSourceMapping}"
+
+  "#{err.toString()}\n#{frames.join '\n'}\n"
+
+checkShebangLine = (file, input) ->
+  firstLine = input.split(/$/m)[0]
+  rest = firstLine?.match(/^#!\s*([^\s]+\s*)(.*)/)
+  args = rest?[2]?.split(/\s/).filter (s) -> s isnt ''
+  if args?.length > 1
+    console.error '''
+      The script to be run begins with a shebang line with more than one
+      argument. This script will fail on platforms such as Linux which only
+      allow a single argument.
+    '''
+    console.error "The shebang line was: '#{firstLine}' in file '#{file}'"
+    console.error "The arguments were: #{JSON.stringify args}"
