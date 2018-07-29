@@ -105,8 +105,8 @@ exports.Lexer = class Lexer
       # change it here. Also the '::' operator for accessing the prototype
       tag =
         if colon or prev? and
-          (prev[0] in ['.', '?.', '::', '?::'] or
-          not prev.spaced and prev[0] is '@')
+           (prev[0] in ['.', '?.', '::', '?::'] or
+           not prev.spaced and prev[0] is '@')
           'PROPERTY'
         else
           'IDENTIFIER'
@@ -172,3 +172,32 @@ exports.Lexer = class Lexer
         colonToken = @token ':', ':', colonOffset, colon.length
 
       input.length
+
+  numberToken: ->
+    return 0 unless match = NUMBER.exec @chunk
+
+    number = match[0]
+    lexedLength = number.length
+
+    switch
+      when /^0[BOX]/.test number
+        @error "radix prefix in '#{number}' must be lowercase", offset: 1
+      when /^(?!0x).*E/.test number
+        @error "exponential notation in '#{number}' must be indicated with a lowercase 'e'",
+          offset: number.indexOf('E')
+      when /^0\d*[89]/.test number
+        @error "decimal literal '#{number}' must not be prefixed with '0'", length: lexedLength
+      when /^0\d+/.test number
+        @error "octal literal '#{number}' must be prefixed with '0o'", length: lexedLength
+
+    base = switch number.charAt 1
+      when 'b' then 2
+      when 'o' then 8
+      when 'x' then 16
+      else null
+
+    numberValue = if base? then parseInt(number[2..], base) else parseFloat(number)
+
+    tag = if numberValue is Infinity then 'INFINITY' else 'NUMBER'
+    @token tag, number, 0, lexedLength
+    lexedLength
