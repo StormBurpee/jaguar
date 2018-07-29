@@ -201,3 +201,50 @@ exports.Lexer = class Lexer
     tag = if numberValue is Infinity then 'INFINITY' else 'NUMBER'
     @token tag, number, 0, lexedLength
     lexedLength
+
+  stringToken: ->
+    [quote] = STRING_START.exec(@chunk) || []
+    return 0 unless quote
+
+    prev = @prev()
+    if prev and @value() is 'from' and (@seenImport or @seenExport)
+      prev[0] = 'FROM'
+
+    regex = switch quote
+      when "'"   then STRING_SINGLE
+      when '"'   then STRING_DOUBLE
+      when "'''" then HEREDOC_SINGLE
+      when '"""' then HEREDOC_DOUBLE
+    heredoc = quote.length is 3
+
+    {tokens, index: end} = @matchWithInterpolations regex, quote
+    $ = tokens.length - 1
+
+    delimiter = quote.charAt(0)
+    if heredoc
+      # Find the smallest indentation. It will be removed from all lines later.
+      indent = null
+      doc = (token[1] for token, i in tokens when token[0] is 'NEOSTRING').join '#{}'
+      while match = HEREDOC_INDENT.exec doc
+        attempt = match[1]
+        indent = attempt if indent is null or 0 < attempt.length < indent.length
+      indentRegex = /// \n#{indent} ///g if indent
+      @mergeInterpolationTokens tokens, {delimiter}, (value, i) =>
+        value = @formatString value, delimiter: quote
+        value = value.replace indentRegex, '\n' if indentRegex
+        value = value.replace LEADING_BLANK_LINE,  '' if i is 0
+        value = value.replace TRAILING_BLANK_LINE, '' if i is $
+        value
+    else
+      @mergeInterpolationTokens tokens, {delimiter}, (value, i) =>
+        value = @formatString value, delimiter: quote
+        # Remove indentation from multiline single-quoted strings.
+        value = value.replace SIMPLE_STRING_OMIT, (match, offset) ->
+          if (i is 0 and offset is 0) or
+             (i is $ and offset + match.length is value.length)
+            ''
+          else
+            ' '
+        value
+    end
+  
