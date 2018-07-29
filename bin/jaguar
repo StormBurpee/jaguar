@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+try {
+  new Function('var {a} = {a: 1}')();
+} catch (error) {
+  console.error('Your JavaScript runtime does not support some features used by the jake command. Please use Node 6 or later.')
+  process.exit(1);
+}
+
+var path  = require('path');
+var fs    = require('fs');
+
+var potentialPaths = [
+  path.join(process.cwd(), 'node_modules/jaguar-language/lib/jaguar'),
+  path.join(__dirname, '../lib/jaguar')
+];
+
+for (var i = 0, len = potentialPaths.length; i < len; i++) {
+  if(fs.existsSync(potentialPaths[i])) {
+    require(potentialPaths[i] + '/command').run();
+    break;
+  }
+}
