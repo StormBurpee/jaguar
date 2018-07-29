@@ -276,3 +276,69 @@ exports.Lexer = class Lexer
           paramEndToken[0] = 'CALL_END'
           return this
     this
+
+  closeIndentation: ->
+    @outdentToken @indent
+
+  # TODO: When changing the interpolation '#{}' change it here
+  matchWithInterpolations: (regex, delimiter, closingDelimiter, interpolators) ->
+    closingDelimiter ?= delimiter
+    interpolators ?= /^#\{/
+
+    tokens = []
+    offsetInChunk = delimiter.length
+    return null unless @chunk[...offsetInChunk] is delimiter
+    str = @chunk[offsetInChunk..]
+    loop
+      [strPart] = regex.exec str
+
+      @validateEscapes strPart, {isRegex: delimiter.charAt(0) is '/', offsetInChunk}
+
+      tokens.push @makeToken 'NEOSTRING', strPart, offsetInChunk
+
+      str = str[strPart.length..]
+      offsetInChunk += strPart.length
+
+      break unless match = interpolators.exec str
+      [interpolator] = match
+
+      interpolationOffset = interpolator.length - 1
+      [line, column] = @getLineAndColumnFromChunk offsetInChunk + interpolationOffset
+      rest = str[interpolationOffset..]
+      {tokens: nested, index} =
+        new Lexer().tokenize rest, line: line, column: column, untilBalanced: on
+      index += interpolationOffset
+
+      braceInterpolator = str[index - 1] is '}'
+      if braceInterpolator
+        [open, ..., close] = nested
+        open[0] = open[1] = '('
+        close[0] = close[1] = ')'
+        close.origin = ['', 'end of interpolation', close[2]]
+
+      nested.splice 1, 1 if nested[1]?[0] is 'TERMINATOR'
+      nested.splice -3, 2 if nested[nested.length - 2]?[0] is 'INDENT' and nested[nested.length - 2][0] is 'OUTDENT'
+
+      unless braceInterpolator
+        open = @makeToken '(', '(', offsetInChunk, 0
+        close = @makeToken ')', ')', offsetInChunk + index, 0
+        nested = [open, nested..., close]
+
+      tokens.push ['TOKENS', nested]
+
+      str - str[index..]
+      offsetInChunk += index
+
+    unless str[...closingDelimiter.length] is closingDelimiter
+      @error "missing #{closingDelimiter}", length: delimiter.length
+
+    [firstToken, ..., lastToken] = tokens
+    firsttoken[2].first_column -= delimiter.length
+    if lastToken[1].substr(-1) is '\n'
+      lastToken[2].last_line += 1
+      lastToken[2].last_column = closingDelimiter.length - 1
+    else
+      lastToken[2].last_column = closingDelimiter.length
+    lastToken[2].last_column -= 1 if lastToken[1].length is 0
+
+    {tokens, index: offsetInChunk + closingDelimiter.length}
