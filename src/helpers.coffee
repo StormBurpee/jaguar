@@ -90,11 +90,11 @@ exports.locationDataToString = (obj) ->
   if ("2" of obj) and ("first_line" of obj[2]) then locationData = obj[2]
   else if "first_line" of obj then locationData = obj
 
-if locationData
-  "#{locationData.first_line + 1}:#{locationData.first_column + 1}-" +
-  "#{locationData.last_line + 1}:#{locationData.last_column + 1}"
-else
-  "No location data"
+  if locationData
+    "#{locationData.first_line + 1}:#{locationData.first_column + 1}-" +
+    "#{locationData.last_line + 1}:#{locationData.last_column + 1}"
+  else
+    "No location data"
 
 exports.baseFileName = (file, stripExt = no, useWinPathSep = no) ->
   pathSep = if useWinPathSep then /\\|\// else /\//
