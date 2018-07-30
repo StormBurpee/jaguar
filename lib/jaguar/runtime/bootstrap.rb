@@ -10,15 +10,12 @@ module Jaguar
   Runtime["Class"] = jaguar_class
   Runtime["Object"] = object_class
   Runtime["Number"] = JaguarClass.new
+  Runtime["Bool"] = JaguarClass.new
   Runtime["String"] = JaguarClass.new
 
-  Runtime["TrueClass"] = JaguarClass.new
-  Runtime["FalseClass"] = JaguarClass.new
-  Runtime["NullClass"] = JaguarClass.new
-
-  Runtime["true"] = Runtime["TrueClass"].new_with_value(true)
-  Runtime["false"] = Runtime["FalseClass"].new_with_value(false)
-  Runtime["null"] = Runtime["NullClass"].new_with_value(nil)
+  Runtime["true"] = Runtime["Bool"].new_with_value(true)
+  Runtime["false"] = Runtime["Bool"].new_with_value(false)
+  Runtime["null"] = Runtime["Bool"].new_with_value(nil)
 
   Runtime["Class"].runtime_methods["new"] = proc do |receiver, arguments|
     receiver.new
