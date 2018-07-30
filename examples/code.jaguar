@@ -17,3 +17,5 @@ jeff = Person.new
 
 log(jeff.speak)
 helloworld
+
+log "hello"

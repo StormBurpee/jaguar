@@ -22,6 +22,8 @@ prechigh
   left  ','
 preclow
 
+expect 1
+
 rule
   Root:
     /* nothing */                         { result = Nodes.new([]) }
