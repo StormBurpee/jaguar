@@ -3,7 +3,6 @@ class Animal ->
     print("Hello! " + message)
 
 class Person::Animal ->
-  x = 3
   say: message ->
     message
   speak: ->

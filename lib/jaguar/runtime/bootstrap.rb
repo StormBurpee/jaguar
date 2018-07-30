@@ -19,7 +19,11 @@ module Jaguar
   Runtime["null"] = Runtime["Bool"].new_with_value(nil)
 
   Runtime["Class"].runtime_methods["new"] = proc do |receiver, arguments|
-    receiver.new
+    nc = receiver.new
+    if receiver.method_exists("init")
+      receiver.lookup("init").call(nc, arguments)
+    end
+    nc
   end
 
   require_relative "core/object"
