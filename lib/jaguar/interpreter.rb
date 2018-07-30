@@ -132,6 +132,12 @@ module Jaguar
     end
   end
 
+  class SuperNode
+    def eval(context)
+      puts context
+    end
+  end
+
   class IfNode
     def eval(context)
       if condition.eval(context).ruby_value

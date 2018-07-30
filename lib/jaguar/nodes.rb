@@ -36,6 +36,7 @@ module Jaguar
 
   class DefNode < Struct.new(:name, :params, :body); end
   class ClassNode < Struct.new(:name, :body, :extends); end
+  class SuperNode < Struct.new(:arguments); end
 
   class IfNode < Struct.new(:condition, :body); end
 end

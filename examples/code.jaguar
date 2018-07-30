@@ -6,6 +6,8 @@ class Person::Animal ->
   x = 3
   say: message ->
     message
+  speak: ->
+    print("Overriding parents speak!")
 
 log: message ->
   print(message)
@@ -14,8 +16,4 @@ helloworld ->
   print("Hello, World!")
 
 jeff = Person.new
-
-log(jeff.speak)
-helloworld
-
-log "hello"
+jeff.speak

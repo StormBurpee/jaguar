@@ -2,7 +2,7 @@ module Jaguar
 
   jaguar_class = JaguarClass.new
   jaguar_class.runtime_class = jaguar_class
-  object_class = JaguarClass.new
+  object_class = JaguarClass.new(jaguar_class)
   object_class.runtime_class = jaguar_class
 
   Runtime = Context.new(object_class.new)
@@ -22,58 +22,10 @@ module Jaguar
     receiver.new
   end
 
-  # Object Initializations
-  Runtime["Object"].runtime_methods["print"] = proc do |receiver, arguments|
-    puts arguments.first.ruby_value
-    Runtime["null"]
-  end
-  Runtime["Object"].runtime_methods["to_string"] = proc do |receiver, arguments|
-    puts receiver
-    puts arguments
-    Runtime["String"].new_with_value("")
-  end
-  Runtime["Object"].runtime_methods["=="] = proc do |receiver, arguments|
-    Runtime["Bool"].new_with_value(receiver.ruby_value == arguments.first.ruby_value)
-  end
-  Runtime["Object"].runtime_methods["!="] = proc do |receiver, arguments|
-    Runtime["Bool"].new_with_value(receiver.ruby_value != arguments.first.ruby_value)
-  end
 
-  #Number Initializations
-  Runtime["Number"].runtime_methods["+"] = proc do |receiver, arguments|
-    Runtime["Number"].new_with_value(receiver.ruby_value + arguments.first.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["-"] = proc do |receiver, arguments|
-    Runtime["Number"].new_with_value(receiver.ruby_value - arguments.first.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["*"] = proc do |receiver, arguments|
-    Runtime["Number"].new_with_value(receiver.ruby_value * arguments.first.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["/"] = proc do |receiver, arguments|
-    Runtime["Number"].new_with_value(receiver.ruby_value / arguments.first.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["+="] = proc do |receiver, arguments|
-    receiver.ruby_value += arguments.first.ruby_value
-    Runtime["Number"].new_with_value(receiver.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["-="] = proc do |receiver, arguments|
-    receiver.ruby_value -= arguments.first.ruby_value
-    Runtime["Number"].new_with_value(receiver.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["*="] = proc do |receiver, arguments|
-    receiver.ruby_value = receiver.ruby_value * arguments.first.ruby_value
-    Runtime["Number"].new_with_value(receiver.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["/="] = proc do |receiver, arguments|
-    receiver.ruby_value = receiver.ruby_value / arguments.first.ruby_value
-    Runtime["Number"].new_with_value(receiver.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["++"] = proc do |receiver, arguments|
-    receiver.ruby_value += 1;
-    Runtime["Number"].new_with_value(receiver.ruby_value)
-  end
-  Runtime["Number"].runtime_methods["--"] = proc do |receiver, arguments|
-    Runtime["Number"].new_with_value(receiver.ruby_value - 1)
-  end
+  require_relative "core/object"
+  require_relative "core/number"
+  require_relative "core/string"
+  require_relative "core/bool"
 
 end

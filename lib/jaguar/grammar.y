@@ -1,7 +1,7 @@
 class Parser
 
 token IF ELSE
-token CLASS EXTENDS
+token CLASS EXTENDS SUPER
 token NEWLINE
 token NUMBER STRING
 token TRUE FALSE NULL
@@ -9,7 +9,7 @@ token IDENTIFIER CONSTANT
 token INDENT DEDENT
 
 prechigh
-  left  '.' 'EXTENDS'
+  left  '.' EXTENDS
   right '!'
   nonassoc '++' '--' '+=' '-='
   left  '*' '/'
@@ -20,6 +20,7 @@ prechigh
   left  '&&'
   left  '||'
   right '=' ':'
+  right SUPER
   left  ','
 preclow
 
@@ -44,6 +45,7 @@ rule
   | Operator
   | Constant
   | Assign
+  | Super
   | FunctionDeclaration
   | Class
   | If
@@ -90,8 +92,8 @@ rule
   | Expression '-=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '*=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '/=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
-  | IDENTIFIER '++'                       { result = CallNode.new(val[0], val[1], nil) }
-  | IDENTIFIER '--'                       { result = CallNode.new(val[0], val[1], nil) }
+  | Expression '++'                       { result = CallNode.new(val[0], val[1], []) }
+  | Expression '--'                       { result = CallNode.new(val[0], val[1], []) }
   | Expression '+'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '-'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '*'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
@@ -105,6 +107,10 @@ rule
   Assign:
     IDENTIFIER '=' Expression             { result = SetLocalNode.new(val[0], val[2]) }
   | Constant "=" Expression               { result = SetConstantNode.new(val[0], val[2]) }
+  ;
+
+  Super:
+    SUPER "(" Expression ")"              { result = SuperNode(val[2]) }
   ;
 
   FunctionDeclaration:
