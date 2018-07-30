@@ -24,11 +24,11 @@ module Jaguar
     end
 
     def new
-      JaguarClass.new(self)
+      JaguarObject.new(self)
     end
 
     def new_with_value(value)
-      JaguarClass.new(self, value)
+      JaguarObject.new(self, value)
     end
   end
 
