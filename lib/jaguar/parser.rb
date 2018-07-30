@@ -697,7 +697,7 @@ module_eval(<<'.,.,', 'grammar.y', 112)
 
 module_eval(<<'.,.,', 'grammar.y', 116)
   def _reduce_52(val, _values, result)
-     result = ClassNode.new(val[1], val[2], []) 
+     result = ClassNode.new(val[1], val[2]) 
     result
   end
 .,.,

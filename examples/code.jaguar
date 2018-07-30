@@ -11,4 +11,4 @@ def log(message) ->
 
 jeff = Person.new
 
-log(jeff.say("hello"))
+log(jeff.speak)

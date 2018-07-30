@@ -115,7 +115,7 @@ rule
 
   Class:
     CLASS CONSTANT Block                  { result = ClassNode.new(val[1], val[2], []) }
-  | CLASS CONSTANT EXTENDS CONSTANT Block    { result = ClassNode.new(val[1], val[4], val[3]) }
+  | CLASS CONSTANT EXTENDS CONSTANT Block { result = ClassNode.new(val[1], val[4], val[3]) }
   ;
 
   If:

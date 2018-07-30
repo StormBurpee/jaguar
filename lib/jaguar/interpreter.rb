@@ -111,7 +111,15 @@ module Jaguar
       jaguar_class = context[name]
 
       unless jaguar_class
-        jaguar_class = JaguarClass.new
+        unless extends.nil?
+          parent_class = context[extends]
+          unless parent_class
+            raise "Class #{name} is trying to extend Class #{extends}, but Class #{extends} doesn't exist!"
+          end
+          jaguar_class = JaguarClass.new(parent_class)
+        else
+          jaguar_class = JaguarClass.new
+        end
         context[name] = jaguar_class
       end
 
