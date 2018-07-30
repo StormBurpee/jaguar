@@ -1,6 +1,6 @@
 class Hello:
   def world:
     "Hello, World!"
-    
+
 hello = Hello.new
 print(hello.world)
