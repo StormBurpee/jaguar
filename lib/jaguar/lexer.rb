@@ -4,12 +4,12 @@ module Jaguar
 
     def tokenize(code)
       code.chomp!
-
-      i = 0
       tokens = []
+
       current_indent = 0
       indent_stack = []
 
+      i = 0
       while i < code.size
         chunk = code[i..-1]
 
@@ -30,7 +30,7 @@ module Jaguar
           tokens << [:NUMBER, number.to_i]
           i += number.size
         # Matches for strings, currently only supports '""'
-        elsif string = chunk[/\A"(.*?)"/, 1]
+        elsif string = chunk[/\A"([^"]*)"/, 1]
           tokens << [:STRING, string]
           i += string.size + 2 # Plus 2, because of the quotes.
         # Matches for indentations <newline> <spaces>
@@ -59,7 +59,7 @@ module Jaguar
           else
             raise "Missing ':' after raising indentation level." # TODO: fix this when you remove ':'
           end
-          i += indent.size + 2
+          i += indent.size + 1
         # matches for long operators
         elsif operator = chunk[/\A(\|\||&&|==|!=|<=|>=)/, 1]
           tokens << [operator, operator]
