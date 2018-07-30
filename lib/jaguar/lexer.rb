@@ -34,8 +34,10 @@ module Jaguar
           tokens << [:STRING, string]
           i += string.size + 2 # Plus 2, because of the quotes.
         # Matches for indentations <newline> <spaces>
-        # TODO: Change the : having to be on the end.
-        elsif indent = chunk[/\A\:\n( +)/m, 1]
+        elsif string = chunk[/\A(::)/, 1]
+          tokens << [:EXTENDS, string]
+          i += 2
+        elsif indent = chunk[/\A\->\n( +)/m, 1]
           if indent.size <= current_indent
             raise "Bad indent level, got #{indent.size} indents, expected > #{current_indent} indents"
           end
@@ -57,7 +59,7 @@ module Jaguar
             end
             tokens << [:NEWLINE, "\n"]
           else
-            raise "Missing ':' after raising indentation level." # TODO: fix this when you remove ':'
+            raise "Missing '->' before raising indentation level." # TODO: fix this when you remove ':'
           end
           i += indent.size + 1
         # matches for long operators

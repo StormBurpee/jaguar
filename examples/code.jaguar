@@ -6,9 +6,9 @@ class Person::Animal ->
   def say(message) ->
     message
 
-log(message) ->
+def log(message) ->
   print(message)
 
 jeff = Person.new
 
-log(jeff.speak)
+log(jeff.say("hello"))

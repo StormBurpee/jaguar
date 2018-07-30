@@ -2,7 +2,7 @@ class Parser
 
 token IF ELSE
 token DEF
-token CLASS
+token CLASS EXTENDS
 token NEWLINE
 token NUMBER STRING
 token TRUE FALSE NULL
@@ -10,7 +10,7 @@ token IDENTIFIER CONSTANT
 token INDENT DEDENT
 
 prechigh
-  left  '.'
+  left  '.' 'EXTENDS'
   right '!'
   nonassoc '++' '--'
   left  '*' '/'
@@ -114,7 +114,8 @@ rule
   ;
 
   Class:
-    CLASS CONSTANT Block                  { result = ClassNode.new(val[1], val[2]) }
+    CLASS CONSTANT Block                  { result = ClassNode.new(val[1], val[2], []) }
+  | CLASS CONSTANT EXTENDS CONSTANT Block    { result = ClassNode.new(val[1], val[4], val[3]) }
   ;
 
   If:
