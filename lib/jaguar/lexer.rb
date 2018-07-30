@@ -51,8 +51,8 @@ module Jaguar
             tokens << [:NEWLINE, "\n"]
           elsif indent.size < current_indent
             while indent.size < current_indent # closes all blocks that are less than indent size
-              ident_stack.pop
-              current_indent = index_stack.first || 0
+              indent_stack.pop
+              current_indent = indent_stack.first || 0
               tokens << [:DEDENT, indent.size]
             end
             tokens << [:NEWLINE, "\n"]
