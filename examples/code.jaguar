@@ -1,12 +1,13 @@
 class Animal ->
-  speak: ->
-    print("Speaking!")
+  speak: message ->
+    print("Hello! " + message)
 
 class Person::Animal ->
   x = 3
   say: message ->
     message
   speak: ->
+    super("I am a human!")
     print("Overriding parent")
 
 log: message ->
@@ -17,5 +18,5 @@ helloworld ->
 
 jeff = Person.new
 bob = Animal.new
-bob.speak
+bob.speak("hello")
 jeff.speak

@@ -4,8 +4,6 @@ module Jaguar
     Runtime["null"]
   end
   Runtime["Object"].runtime_methods["to_string"] = proc do |receiver, arguments|
-    puts receiver
-    puts arguments
     Runtime["String"].new_with_value("")
   end
   Runtime["Object"].runtime_methods["=="] = proc do |receiver, arguments|

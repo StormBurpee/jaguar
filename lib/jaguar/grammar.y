@@ -110,7 +110,7 @@ rule
   ;
 
   Super:
-    SUPER "(" ParamList ")"              { result = SuperNode.new(val[2]) }
+    SUPER "(" ArgList ")"              { result = SuperNode.new(val[2]) }
   ;
 
   FunctionDeclaration:

@@ -16,7 +16,6 @@ module Jaguar
   class Nodes
     def eval(context)
       return_value = nil
-
       nodes.each do |node|
         return_value = node.eval(context)
       end
@@ -65,7 +64,6 @@ module Jaguar
         else
           value = context.current_self
         end
-
         eval_arguments = arguments.map { |arg| arg.eval(context) }
         value.call(method, eval_arguments)
       end
@@ -98,7 +96,7 @@ module Jaguar
 
   class DefNode
     def eval(context)
-      method = JaguarMethod.new(params, body)
+      method = JaguarMethod.new(params, body, name)
       context.current_class.runtime_methods[name] = method
     end
   end
@@ -120,6 +118,7 @@ module Jaguar
         else
           jaguar_class = JaguarClass.new
         end
+        jaguar_class.set_class_name(name)
         context[name] = jaguar_class
       end
 
@@ -134,9 +133,12 @@ module Jaguar
 
   class SuperNode
     def eval(context)
-      puts context
-      puts context.current_self.ruby_value.inspect
-      puts context.current_class
+      unless context.current_class.runtime_superclass.method_exists(context.current_method)
+        raise "#{context.current_method} does not exist in any parent classes of #{context.current_class.classname}."
+      end
+      method = context.current_class.runtime_superclass.lookup(context.current_method)
+      eval_arguments = arguments.map { |arg| arg.eval(context) }
+      method.call(context.current_class.runtime_superclass, eval_arguments)
     end
   end
 

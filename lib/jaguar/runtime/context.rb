@@ -1,7 +1,7 @@
 module Jaguar
 
   class Context
-    attr_reader :locals, :current_self, :current_class
+    attr_reader :locals, :current_self, :current_class, :current_method
 
     @@constants = {}
 
@@ -9,6 +9,10 @@ module Jaguar
       @locals = {}
       @current_self = current_self
       @current_class = current_class
+    end
+
+    def set_current_method(method)
+      @current_method = method
     end
 
     def [](name)

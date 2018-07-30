@@ -1,11 +1,12 @@
 module Jaguar
 
   class JaguarClass < JaguarObject
-    attr_reader :runtime_methods
+    attr_reader :runtime_methods, :runtime_superclass, :classname
 
     def initialize(superclass = nil)
       @runtime_methods = {}
       @runtime_superclass = superclass
+      @classname = ""
 
       if defined? Runtime
         runtime_class = Runtime['Class']
@@ -14,6 +15,14 @@ module Jaguar
       end
 
       super(runtime_class)
+    end
+
+    def set_class_name(classname)
+      @classname = classname
+    end
+
+    def get_class_name()
+      @classname
     end
 
     def lookup(method_name, object = false)
@@ -30,6 +39,19 @@ module Jaguar
         end
       end
       method
+    end
+
+    def method_exists(method_name)
+      m_exists = false
+      method = @runtime_methods[method_name]
+      unless method
+        if @runtime_superclass
+          m_exists = @runtime_superclass.method_exists(method_name)
+        end
+      else
+        return true
+      end
+      m_exists
     end
 
     def new
