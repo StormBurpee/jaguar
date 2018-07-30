@@ -16,13 +16,17 @@ module Jaguar
       super(runtime_class)
     end
 
-    def lookup(method_name)
+    def lookup(method_name, object = false)
       method = @runtime_methods[method_name]
       unless method
         if @runtime_superclass
           return @runtime_superclass.lookup(method_name)
         else
-          raise "Method not found #{method_name}"
+          if defined? Runtime and !object
+            return Runtime['Object'].lookup(method_name, true)
+          else
+            raise "Method not found #{method_name}"
+          end
         end
       end
       method

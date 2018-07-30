@@ -2,7 +2,7 @@ module Jaguar
 
   jaguar_class = JaguarClass.new
   jaguar_class.runtime_class = jaguar_class
-  object_class = JaguarClass.new(jaguar_class)
+  object_class = JaguarClass.new
   object_class.runtime_class = jaguar_class
 
   Runtime = Context.new(object_class.new)
@@ -21,7 +21,6 @@ module Jaguar
   Runtime["Class"].runtime_methods["new"] = proc do |receiver, arguments|
     receiver.new
   end
-
 
   require_relative "core/object"
   require_relative "core/number"

@@ -135,6 +135,8 @@ module Jaguar
   class SuperNode
     def eval(context)
       puts context
+      puts context.current_self.ruby_value.inspect
+      puts context.current_class
     end
   end
 
