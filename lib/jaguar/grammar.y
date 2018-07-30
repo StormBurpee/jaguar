@@ -1,7 +1,6 @@
 class Parser
 
 token IF ELSE
-token DEF
 token CLASS EXTENDS
 token NEWLINE
 token NUMBER STRING
@@ -19,7 +18,7 @@ prechigh
   left  '==' '!='
   left  '&&'
   left  '||'
-  right '='
+  right '=' ':'
   left  ','
 preclow
 
@@ -42,7 +41,7 @@ rule
   | Operator
   | Constant
   | Assign
-  | Def
+  | FunctionDeclaration
   | Class
   | If
   | '(' Expression ')'                    { result = val[1] }
@@ -101,10 +100,11 @@ rule
   | Constant "=" Expression               { result = SetConstantNode.new(val[0], val[2]) }
   ;
 
-  Def:
-    DEF IDENTIFIER Block                  { result = DefNode.new(val[1], [], val[2]) }
-  | DEF IDENTIFIER
-    "(" ParamList ")" Block               { result = DefNode.new(val[1], val[3], val[5]) }
+  FunctionDeclaration:
+    IDENTIFIER Block                      { result = DefNode.new(val[0], [], val[1]) }
+  | IDENTIFIER ":"
+    "(" ParamList ")" Block               { result = DefNode.new(val[0], val[3], val[5]) }
+  | IDENTIFIER ":" ParamList Block        { result = DefNode.new(val[0], val[2], val[3]) }
   ;
 
   ParamList:
@@ -114,7 +114,7 @@ rule
   ;
 
   Class:
-    CLASS CONSTANT Block                  { result = ClassNode.new(val[1], val[2], []) }
+    CLASS CONSTANT Block                  { result = ClassNode.new(val[1], val[2], nil) }
   | CLASS CONSTANT EXTENDS CONSTANT Block { result = ClassNode.new(val[1], val[4], val[3]) }
   ;
 

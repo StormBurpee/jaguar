@@ -1,14 +1,19 @@
 class Animal ->
-  def speak ->
+  speak: ->
     "Speaking!"
 
 class Person::Animal ->
-  def say(message) ->
+  x = 3
+  say: message ->
     message
 
-def log(message) ->
+log: message ->
   print(message)
+
+helloworld ->
+  print("Hello, World!")
 
 jeff = Person.new
 
 log(jeff.speak)
+helloworld
