@@ -1,4 +1,4 @@
-require "jaguar/version"
+require_relative "jaguar/version"
 
 module Jaguar
 
