@@ -1,9 +1,9 @@
 module Jaguar
 
-  class ParseError < Racc:ParseError
+  class ParseError < Racc::ParseError
     TOKEN_MAP = {
-      'INDENT' => 'indent'
-      'DEDENT' => 'dedent'
+      'INDENT' => 'indent',
+      'DEDENT' => 'dedent',
       "\n"     => 'newline'
     }
 
