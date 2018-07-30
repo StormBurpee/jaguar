@@ -128,7 +128,7 @@ module Jaguar
     def eval(context)
       if condition.eval(context).ruby_value
         body.eval(context)
-      else
+      end
     end
   end
 
