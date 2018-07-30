@@ -1,4 +1,14 @@
-x = 3
+class Animal ->
+  def speak ->
+    "Speaking!"
 
-if x == 3:
-  print("x = 3!")
+class Person::Animal ->
+  def say(message) ->
+    message
+
+log(message) ->
+  print(message)
+
+jeff = Person.new
+
+log(jeff.speak)
