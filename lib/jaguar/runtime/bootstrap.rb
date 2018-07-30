@@ -29,4 +29,24 @@ module Jaguar
     Runtime["null"]
   end
 
+  #Number Initializations
+  Runtime["Number"].runtime_methods["+"] = proc do |receiver, arguments|
+    Runtime["Number"].new_with_value(receiver.ruby_value + arguments.first.ruby_value)
+  end
+  Runtime["Number"].runtime_methods["-"] = proc do |receiver, arguments|
+    Runtime["Number"].new_with_value(receiver.ruby_value - arguments.first.ruby_value)
+  end
+  Runtime["Number"].runtime_methods["*"] = proc do |receiver, arguments|
+    Runtime["Number"].new_with_value(receiver.ruby_value * arguments.first.ruby_value)
+  end
+  Runtime["Number"].runtime_methods["/"] = proc do |receiver, arguments|
+    Runtime["Number"].new_with_value(receiver.ruby_value / arguments.first.ruby_value)
+  end
+  Runtime["Number"].runtime_methods["++"] = proc do |receiver, arguments|
+    Runtime["Number"].new_with_value(receiver.ruby_value + 1)
+  end
+  Runtime["Number"].runtime_methods["--"] = proc do |receiver, arguments|
+    Runtime["Number"].new_with_value(receiver.ruby_value - 1)
+  end
+
 end

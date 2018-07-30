@@ -12,6 +12,7 @@ token INDENT DEDENT
 prechigh
   left  '.'
   right '!'
+  nonassoc '++' '--'
   left  '*' '/'
   left  '+' '-'
   left  '>' '>=' '<' '<='
@@ -83,6 +84,8 @@ rule
   | Expression '>=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '<'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '<=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
+  | Expression '++'                       { result = CallNode.new(val[0], val[1], []) }
+  | Expression '--'                       { result = CallNode.new(val[0], val[1], []) }
   | Expression '+'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '-'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '*'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
@@ -127,6 +130,8 @@ end
 ---- header
 require_relative "lexer"
 require_relative "nodes"
+require_relative "parse_error"
+
 module Jaguar
 
 ---- inner
@@ -138,6 +143,10 @@ module Jaguar
 
   def next_token
     @tokens.shift
+  end
+
+  def on_error(error_token_id, error_value, value_stack)
+    raise ParseError.new(token_to_str(error_token_id), error_value, value_stack)
   end
 
 ---- footer
