@@ -1,11 +1,11 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "jaguar/lang/version"
+require "jaguar/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "jaguar-lang"
-  spec.version       = Jaguar::Lang::VERSION
+  spec.version       = Jaguar::VERSION
   spec.authors       = ["Storm Burpee"]
   spec.email         = ["stormburpee@gmail.com"]
 

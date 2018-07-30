@@ -1,6 +1,13 @@
 require "bundler/gem_tasks"
-require "rspec/core/rake_task"
 
-RSpec::Core::RakeTask.new(:spec)
+task default: %w[buildjaguar]
 
-task :default => :spec
+task :buildparser do
+  puts "Building Parser"
+  sh "racc -o lib/jaguar/parser.rb lib/jaguar/grammar.y"
+end
+
+task :buildjaguar do
+  puts "Building..."
+  sh ""
+end
