@@ -63,7 +63,7 @@ module Jaguar
           end
           i += indent.size + 1
         # matches for long operators
-        elsif operator = chunk[/\A(\|\||&&|==|!=|<=|>=)/, 1]
+        elsif operator = chunk[/\A(\|\||&&|==|!=|<=|>=|\+\+|\-\-|\+\=|\-\=|\*\=|\/\=)/, 1]
           tokens << [operator, operator]
           i += operator.size
         # matches for whitespace, ignores whitespaces

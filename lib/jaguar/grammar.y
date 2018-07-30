@@ -11,11 +11,12 @@ token INDENT DEDENT
 prechigh
   left  '.' 'EXTENDS'
   right '!'
-  nonassoc '++' '--'
+  nonassoc '++' '--' '+=' '-='
   left  '*' '/'
   left  '+' '-'
   left  '>' '>=' '<' '<='
   left  '==' '!='
+  right '+=' '-=' '*=' '/='
   left  '&&'
   left  '||'
   right '=' ':'
@@ -85,8 +86,12 @@ rule
   | Expression '>=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '<'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '<=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
-  | IDENTIFIER '++'                       { result = CallNode.new(val[0], val[1], []) }
-  | IDENTIFIER '--'                       { result = CallNode.new(val[0], val[1], []) }
+  | Expression '+=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
+  | Expression '-=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
+  | Expression '*=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
+  | Expression '/=' Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
+  | IDENTIFIER '++'                       { result = CallNode.new(val[0], val[1], nil) }
+  | IDENTIFIER '--'                       { result = CallNode.new(val[0], val[1], nil) }
   | Expression '+'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '-'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
   | Expression '*'  Expression            { result = CallNode.new(val[0], val[1], [val[2]]) }
