@@ -125,8 +125,9 @@ rule
 end
 
 ---- header
-  require "lexer"
-  require "nodes"
+require "lexer"
+require "nodes"
+module Jaguar
 
 ---- inner
   def parse(code, show_tokens=false)
@@ -138,3 +139,6 @@ end
   def next_token
     @tokens.shift
   end
+
+---- footer
+end

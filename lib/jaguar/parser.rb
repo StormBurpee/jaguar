@@ -6,12 +6,13 @@
 
 require 'racc/parser.rb'
 
-  require "lexer"
-  require "nodes"
+require "lexer"
+require "nodes"
+module Jaguar
 
 class Parser < Racc::Parser
 
-module_eval(<<'...end grammar.y/module_eval...', 'grammar.y', 132)
+module_eval(<<'...end grammar.y/module_eval...', 'grammar.y', 133)
   def parse(code, show_tokens=false)
     @tokens = Lexer.new.tokenize(code)
     puts @tokens.inspect if show_tokens
@@ -21,6 +22,7 @@ module_eval(<<'...end grammar.y/module_eval...', 'grammar.y', 132)
   def next_token
     @tokens.shift
   end
+
 ...end grammar.y/module_eval...
 ##### State transition tables begin ###
 
@@ -670,3 +672,5 @@ def _reduce_none(val, _values, result)
 end
 
 end   # class Parser
+
+end
