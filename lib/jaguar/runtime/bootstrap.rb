@@ -20,7 +20,13 @@ module Jaguar
   Runtime["Class"].runtime_methods["new"] = proc do |receiver, arguments|
     receiver.new
   end
+  Runtime["Class"].runtime_methods["to_string"] = proc do |receiver, arguments|
+    puts receiver
+    puts arguments
+    Runtime["String"].new_with_value("")
+  end
 
+  # Object Initializations
   Runtime["Object"].runtime_methods["print"] = proc do |receiver, arguments|
     puts arguments.first.ruby_value
     Runtime["null"]
@@ -44,6 +50,9 @@ module Jaguar
   end
   Runtime["Number"].runtime_methods["--"] = proc do |receiver, arguments|
     Runtime["Number"].new_with_value(receiver.ruby_value - 1)
+  end
+  Runtime["Number"].runtime_methods["=="] = proc do |receiver, arguments|
+    Runtime["Bool"].new_with_value(receiver.ruby_value == arguments.first.ruby_value)
   end
 
 end
