@@ -3,8 +3,12 @@ class Animal ->
     print("Hello! " + message)
 
 class Person::Animal ->
+  static count: ->
+    print("People Count")
+  init: name ->
+    name = name
   say: message ->
-    message
+    print(message)
   speak: ->
     super("I am a human!")
     print("Overriding parent")
@@ -15,7 +19,8 @@ log: message ->
 helloworld ->
   print("Hello, World!")
 
-jeff = Person.new
-bob = Animal.new
-bob.speak("hello")
-jeff.speak
+jeff = Person.new("Jeff")
+bob = Person.new("Bob")
+
+jeff.say("test")
+Person.say("test")

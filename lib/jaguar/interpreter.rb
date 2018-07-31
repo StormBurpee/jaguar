@@ -70,6 +70,24 @@ module Jaguar
     end
   end
 
+  class StaticCallNode
+    def eval(context)
+      if receiver.nil? && context.locals[method] && arguments.empty?
+        context.locals[method]
+      else
+        if context[receiver]
+          mc = context[receiver]
+          puts mc.static_methods
+          lm = mc.lookup_static(method)
+          puts lm
+          value = receiver.eval(context)
+        else
+          raise "Static Call Called on a non Static Item"
+        end
+      end
+    end
+  end
+
   class GetConstantNode
     def eval(context)
       context[name]
@@ -97,7 +115,11 @@ module Jaguar
   class DefNode
     def eval(context)
       method = JaguarMethod.new(params, body, name)
-      context.current_class.runtime_methods[name] = method
+      unless static
+        context.current_class.runtime_methods[name] = method
+      else
+        context.current_class.static_methods[name] = method
+      end
     end
   end
 

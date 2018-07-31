@@ -1,6 +1,6 @@
 module Jaguar
   class Lexer
-    KEYWORDS = ["def", "class", "if", "true", "false", "null", "super"]
+    KEYWORDS = ["def", "class", "if", "true", "false", "null", "super", "static"]
 
     def tokenize(code)
       code.chomp!

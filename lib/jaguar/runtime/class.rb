@@ -1,10 +1,11 @@
 module Jaguar
 
   class JaguarClass < JaguarObject
-    attr_reader :runtime_methods, :runtime_superclass, :classname
+    attr_reader :runtime_methods, :static_methods, :runtime_superclass, :classname
 
     def initialize(superclass = nil)
       @runtime_methods = {}
+      @static_methods = {}
       @runtime_superclass = superclass
       @classname = ""
 
@@ -28,7 +29,9 @@ module Jaguar
     def lookup(method_name, object = false)
       method = @runtime_methods[method_name]
       unless method
-        if @runtime_superclass
+        if @static_methods[method_name]
+          method = @static_methods[method_name]
+        elsif @runtime_superclass
           return @runtime_superclass.lookup(method_name)
         else
           if defined? Runtime and !object
@@ -41,11 +44,27 @@ module Jaguar
       method
     end
 
+    def lookup_static(method_name, object = false)
+      puts "checking for #{method_name}, in #{@static_methods}"
+      method = @static_methods[method_name]
+      unless method
+        if @runtime_superclass
+          puts "checking parent"
+          return @runtime_superclass.lookup_static(method_name)
+        else
+          raise "Method not found #{method_name}"
+        end
+      end
+      method
+    end
+
     def method_exists(method_name)
       m_exists = false
       method = @runtime_methods[method_name]
       unless method
-        if @runtime_superclass
+        if @static_methods[method_name]
+          return true
+        else @runtime_superclass
           m_exists = @runtime_superclass.method_exists(method_name)
         end
       else

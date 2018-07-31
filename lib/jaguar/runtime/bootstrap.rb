@@ -18,7 +18,7 @@ module Jaguar
   Runtime["false"] = Runtime["Bool"].new_with_value(false)
   Runtime["null"] = Runtime["Bool"].new_with_value(nil)
 
-  Runtime["Class"].runtime_methods["new"] = proc do |receiver, arguments|
+  Runtime["Class"].static_methods["new"] = proc do |receiver, arguments|
     nc = receiver.new
     if receiver.method_exists("init")
       receiver.lookup("init").call(nc, arguments)

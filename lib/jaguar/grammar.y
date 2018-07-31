@@ -2,6 +2,7 @@ class Parser
 
 token IF ELSE
 token CLASS EXTENDS SUPER
+token STATIC THIS
 token NEWLINE
 token NUMBER STRING
 token TRUE FALSE NULL
@@ -9,7 +10,7 @@ token IDENTIFIER CONSTANT
 token INDENT DEDENT
 
 prechigh
-  left  '.' EXTENDS
+  left  '.' EXTENDS STATIC THIS
   right '!'
   nonassoc '++' '--' '+=' '-='
   left  '*' '/'
@@ -20,7 +21,7 @@ prechigh
   left  '&&'
   left  '||'
   right '=' ':'
-  right SUPER
+  right SUPER CONSTANT
   left  ','
 preclow
 
@@ -68,6 +69,9 @@ rule
   Call:
     IDENTIFIER                            { result = CallNode.new(nil, val[0], []) }
   | IDENTIFIER '(' ArgList ')'            { result = CallNode.new(nil, val[0], val[2]) }
+  | CONSTANT '.' IDENTIFIER               { result = StaticCallNode.new(val[0], val[2], [])}
+  | CONSTANT '.' IDENTIFIER
+    '(' ArgList ')'                       { result = StaticCallNode.new(val[0], val[2], val[4]) }
   | Expression '.' IDENTIFIER             { result = CallNode.new(val[0], val[2], []) }
   | Expression '.' IDENTIFIER
     '(' ArgList ')'                       { result = CallNode.new(val[0], val[2], val[4]) }
@@ -114,10 +118,14 @@ rule
   ;
 
   FunctionDeclaration:
-    IDENTIFIER Block                      { result = DefNode.new(val[0], [], val[1]) }
+    IDENTIFIER Block                      { result = DefNode.new(val[0], [], val[1], false) }
   | IDENTIFIER ":"
-    "(" ParamList ")" Block               { result = DefNode.new(val[0], val[3], val[5]) }
-  | IDENTIFIER ":" ParamList Block        { result = DefNode.new(val[0], val[2], val[3]) }
+    "(" ParamList ")" Block               { result = DefNode.new(val[0], val[3], val[5], false) }
+  | IDENTIFIER ":" ParamList Block        { result = DefNode.new(val[0], val[2], val[3], false) }
+  | STATIC IDENTIFIER Block               { result = DefNode.new(val[1], [], val[2], true) }
+  | STATIC IDENTIFIER ":"
+    "(" ParamList ")" Block               { result = DefNode.new(val[1], val[4], val[6], true) }
+  | STATIC IDENTIFIER ":" ParamList Block { result = DefNode.new(val[1], val[4], val[6], true) }
   ;
 
   ParamList:
