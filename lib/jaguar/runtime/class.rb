@@ -81,8 +81,10 @@ module Jaguar
       unless method
         if @static_methods[method_name]
           return true
-        else @runtime_superclass
+        elsif @runtime_superclass
           m_exists = @runtime_superclass.method_exists(method_name)
+        else
+          return false
         end
       else
         return true

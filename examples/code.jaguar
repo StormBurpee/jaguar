@@ -11,7 +11,7 @@ class Person::Animal ->
     print(@name + " says: " + message)
   speak: ->
     super("I am a human! My name is " + @name)
-    @say("Hello there")
+    say("Hello there")
   return_check: y ->
     if y == 5 ->
       return "y is 5"

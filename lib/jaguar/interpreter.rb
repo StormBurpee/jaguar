@@ -26,11 +26,6 @@ module Jaguar
 
       return_value || Runtime["null"]
     end
-
-    def return_node(returnvalue)
-      @returnvalue = returnvalue
-      @returnnode = true
-    end
   end
 
   class NumberNode
@@ -96,7 +91,7 @@ module Jaguar
         if context.current_class.method_exists(identifier)
           m = context.current_class.lookup(identifier)
           eval_arguments = arguments.map { |arg| arg.eval(context) }
-          m.call(context.current_class, eval_arguments)
+          return m.call(context.current_class, eval_arguments)
         end
       end
     end
