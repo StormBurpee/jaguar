@@ -84,6 +84,11 @@ module Jaguar
         v = context.current_class.lookup_variable(identifier)
         return v.eval(context)
       else
+        if context.current_class.method_exists(identifier)
+          m = context.current_class.lookup(identifier)
+          eval_arguments = arguments.map { |arg| arg.eval(context) }
+          m.call(context.current_class, eval_arguments)
+        end
       end
     end
   end

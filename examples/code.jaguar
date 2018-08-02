@@ -11,6 +11,7 @@ class Person::Animal ->
     print(message)
   speak: ->
     super("I am a human! My name is " + @name)
+    @say("Hello there")
 
 jeff = new Person("Jeff")
 bob = new Person("Bob")

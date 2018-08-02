@@ -1,6 +1,7 @@
 module Jaguar
 
   class JaguarMethod
+    attr_accessor :name
     def initialize(params, body, name="")
       @params = params
       @body = body
