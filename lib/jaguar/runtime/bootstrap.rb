@@ -1,5 +1,7 @@
 module Jaguar
 
+  jaguar_debug = true
+
   jaguar_class = JaguarClass.new
   jaguar_class.runtime_class = jaguar_class
   object_class = JaguarClass.new
@@ -24,6 +26,14 @@ module Jaguar
       receiver.lookup("init").call(nc, arguments)
     end
     nc
+  end
+
+  if jaguar_debug
+
+    Runtime["Object"].runtime_methods["inspect"] = proc do |receiver, arguments|
+      Runtime["String"].new_with_value(receiver.inspect)
+    end
+
   end
 
   require_relative "core/object"

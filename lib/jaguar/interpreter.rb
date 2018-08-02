@@ -72,7 +72,7 @@ module Jaguar
           if value.runtime_class
             if value.runtime_class.variable_exists(method)
               v = value.runtime_class.lookup_variable(method)
-              return v.eval(context)
+              return v.eval(value.runtime_class.context)
             end
           end
         end
@@ -82,6 +82,7 @@ module Jaguar
     end
   end
 
+  # TODO: THIS IS BROKEN FOR WHEN CALLING METHODS IN A CLASS
   class ThisCallNode
     def eval(context)
       if context.current_class.variable_exists(identifier)

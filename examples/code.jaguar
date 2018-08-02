@@ -25,6 +25,10 @@ return_check: x ->
 jeff = new Person("Jeff")
 bob = new Person("Bob")
 
+print(jeff)
+print("========================")
+print(bob)
+
 print(return_check(5))
 print(return_check(3))
 

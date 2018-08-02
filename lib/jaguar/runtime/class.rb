@@ -1,7 +1,7 @@
 module Jaguar
 
   class JaguarClass < JaguarObject
-    attr_reader :runtime_methods, :static_methods, :runtime_superclass, :classname, :local_variables, :static_variables
+    attr_reader :runtime_methods, :static_methods, :runtime_superclass, :classname
 
     def initialize(superclass = nil)
       @runtime_methods = {}
@@ -47,11 +47,11 @@ module Jaguar
     end
 
     def set_local(name, value)
-      @local_variables[name] = value;
+      @context.locals[name] = value;
     end
 
     def lookup_variable(variable)
-      v = @local_variables[variable]
+      v = @context.locals[variable]
       unless v
         if @runtime_superclass
           return @runtime_superclass.lookup_variable(variable)
