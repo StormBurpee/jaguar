@@ -1,7 +1,7 @@
 module Jaguar
 
   class JaguarClass < JaguarObject
-    attr_reader :runtime_methods, :static_methods, :runtime_superclass, :classname
+    attr_reader :runtime_methods, :static_methods, :runtime_superclass, :classname, :body
 
     def initialize(superclass = nil)
       @runtime_methods = {}
@@ -26,6 +26,10 @@ module Jaguar
 
     def get_class_name()
       @classname
+    end
+
+    def set_body(body)
+      @body = body
     end
 
     def lookup(method_name, object = false)

@@ -184,10 +184,12 @@ module Jaguar
 
       # Creates a new scope for classes, so methods can be defined here
       # and not accessed globaly.
+
       class_context = Context.new(jaguar_class, jaguar_class)
-      body.eval(class_context)
+      jaguar_class.set_body(body.eval(class_context))
 
       jaguar_class.set_context(class_context)
+
 
       jaguar_class
     end
@@ -212,6 +214,9 @@ module Jaguar
 
       jaguar_class = context[classname]
       jaguar_class_nc = jaguar_class.new
+
+      new_class_context = Context.new(jaguar_class_nc, jaguar_class_nc)
+      jaguar_class_nc.set_context(new_class_context)
 
       if jaguar_class.method_exists("init")
         jaguar_class.lookup("init").call(jaguar_class_nc, arguments);
