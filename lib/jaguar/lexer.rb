@@ -67,6 +67,9 @@ module Jaguar
           tokens << [operator, operator]
           i += operator.size
         # matches for whitespace, ignores whitespaces
+        elsif thistoken = chunk[/\A(@)/, 1]
+          tokens << [:THIS, '@']
+          i += 1
         elsif chunk.match(/\A /)
           i += 1
         # treat all other single characters as a token

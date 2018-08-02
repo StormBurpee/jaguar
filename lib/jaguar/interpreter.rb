@@ -70,6 +70,16 @@ module Jaguar
     end
   end
 
+  class ThisCallNode
+    def eval(context)
+      if context.current_class.variable_exists(identifier)
+        v = context.current_class.lookup_variable(identifier)
+        return v.eval(context)
+      else
+      end
+    end
+  end
+
   class StaticCallNode
     def eval(context)
       if receiver.nil? && context.locals[method] && arguments.empty?
@@ -116,6 +126,12 @@ module Jaguar
     end
   end
 
+  class SetLocalThisNode
+    def eval(context)
+      context.current_class.set_local(name, value.eval(context))
+    end
+  end
+
   class DefNode
     def eval(context)
       method = JaguarMethod.new(params, body, name)
@@ -152,6 +168,8 @@ module Jaguar
       # and not accessed globaly.
       class_context = Context.new(jaguar_class, jaguar_class)
       body.eval(class_context)
+
+      jaguar_class.set_context(class_context)
 
       jaguar_class
     end

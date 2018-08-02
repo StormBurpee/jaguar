@@ -1,7 +1,7 @@
 module Jaguar
 
   class JaguarObject
-    attr_accessor :runtime_class, :ruby_value
+    attr_accessor :runtime_class, :ruby_value, :context
 
     def initialize(runtime_class, ruby_value=self)
       @runtime_class = runtime_class
@@ -10,6 +10,10 @@ module Jaguar
 
     def call(method, arguments=[])
       @runtime_class.lookup(method).call(self, arguments)
+    end
+
+    def set_context(context)
+      @context = context
     end
   end
 

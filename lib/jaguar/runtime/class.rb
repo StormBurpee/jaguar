@@ -1,11 +1,13 @@
 module Jaguar
 
   class JaguarClass < JaguarObject
-    attr_reader :runtime_methods, :static_methods, :runtime_superclass, :classname
+    attr_reader :runtime_methods, :static_methods, :runtime_superclass, :classname, :local_variables, :static_variables
 
     def initialize(superclass = nil)
       @runtime_methods = {}
       @static_methods = {}
+      @local_variables = {}
+      @static_variables = {}
       @runtime_superclass = superclass
       @classname = ""
 
@@ -42,6 +44,23 @@ module Jaguar
         end
       end
       method
+    end
+
+    def set_local(name, value)
+      @local_variables[name] = value;
+    end
+
+    def lookup_variable(variable)
+      v = @local_variables[variable]
+      unless v
+        if @runtime_superclass
+          return @runtime_superclass.lookup_variable(variable)
+        else
+          return nil
+        end
+      else
+        return v
+      end
     end
 
     def lookup_static(method_name, object = false)
@@ -82,6 +101,14 @@ module Jaguar
         return true
       end
       m_exists
+    end
+
+    def variable_exists(variable)
+      v = lookup_variable(variable)
+      unless v
+        return false
+      end
+      return true
     end
 
     def new

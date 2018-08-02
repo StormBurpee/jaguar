@@ -6,21 +6,15 @@ class Person::Animal ->
   static count: ->
     print("People Count")
   init: name ->
-    name = name
+    @name = name
   say: message ->
     print(message)
   speak: ->
-    super("I am a human!")
-    print("Overriding parent")
-
-log: message ->
-  print(message)
-
-helloworld ->
-  print("Hello, World!")
+    super("I am a human! My name is " + @name)
 
 jeff = new Person("Jeff")
 bob = new Person("Bob")
 
 jeff.say("test")
+jeff.speak
 Person.count

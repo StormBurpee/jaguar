@@ -43,6 +43,7 @@ rule
   Expression:
     Literal
   | Call
+  | This
   | Operator
   | Constant
   | Assign
@@ -78,6 +79,11 @@ rule
     '(' ArgList ')'                       { result = CallNode.new(val[0], val[2], val[4]) }
   ;
 
+  This:
+    THIS IDENTIFIER                       { result = ThisCallNode.new(val[1], nil) }
+  | THIS IDENTIFIER '(' ArgList ')'       { result = ThisCallNode.new(val[1], val[3]) }
+  ;
+
   ArgList:
     /* nothing */                         { result = [] }
   | Expression                            { result = val }
@@ -111,6 +117,7 @@ rule
 
   Assign:
     IDENTIFIER '=' Expression             { result = SetLocalNode.new(val[0], val[2]) }
+  | THIS IDENTIFIER '=' Expression        { result = SetLocalThisNode.new(val[1], val[3]) }
   | Constant "=" Expression               { result = SetConstantNode.new(val[0], val[2]) }
   ;
 
