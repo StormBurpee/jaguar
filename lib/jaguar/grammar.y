@@ -131,7 +131,7 @@ rule
   | STATIC IDENTIFIER Block               { result = DefNode.new(val[1], [], val[2], true) }
   | STATIC IDENTIFIER ":"
     "(" ParamList ")" Block               { result = DefNode.new(val[1], val[4], val[6], true) }
-  | STATIC IDENTIFIER ":" ParamList Block { result = DefNode.new(val[1], val[4], val[6], true) }
+  | STATIC IDENTIFIER ":" ParamList Block { result = DefNode.new(val[1], val[3], val[4], true) }
   ;
 
   ParamList:

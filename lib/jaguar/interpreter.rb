@@ -77,10 +77,14 @@ module Jaguar
       else
         if context[receiver]
           mc = context[receiver]
-          puts mc.static_methods
+          unless mc.static_method_exists(method)
+            raise "Static method #{method} does not exists on class."
+          end
           lm = mc.lookup_static(method)
-          puts lm
-          value = receiver.eval(context)
+          eval_arguments = arguments.map { |arg| arg.eval(context) }
+
+          lm.call(context[receiver], eval_arguments)
+          #value = context.current_self
         else
           raise "Static Call Called on a non Static Item"
         end

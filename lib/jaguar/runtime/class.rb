@@ -71,6 +71,19 @@ module Jaguar
       m_exists
     end
 
+    def static_method_exists(method_name)
+      m_exists = false
+      method = @static_methods[method_name]
+      unless method
+        if @runtime_superclass
+          m_exists = @runtime_superclass.static_method_exists(method_name)
+        end
+      else
+        return true
+      end
+      m_exists
+    end
+
     def new
       JaguarObject.new(self)
     end
