@@ -64,6 +64,14 @@ module Jaguar
         else
           value = context.current_self
         end
+        if accessor
+          if value.runtime_class
+            if value.runtime_class.variable_exists(method)
+              v = value.runtime_class.lookup_variable(method)
+              return v.eval(context)
+            end
+          end
+        end
         eval_arguments = arguments.map { |arg| arg.eval(context) }
         value.call(method, eval_arguments)
       end

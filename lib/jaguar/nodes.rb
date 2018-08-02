@@ -28,9 +28,9 @@ module Jaguar
     end
   end
 
-  class CallNode < Struct.new(:receiver, :method, :arguments); end
+  class CallNode < Struct.new(:receiver, :method, :arguments, :accessor); end
   class ThisCallNode < Struct.new(:identifier, :arguments); end
-  class StaticCallNode < Struct.new(:receiver, :method, :arguments); end
+  class StaticCallNode < Struct.new(:receiver, :method, :arguments, :accessor); end
   class GetConstantNode < Struct.new(:name); end
   class SetConstantNode < Struct.new(:name, :value); end
   class GetLocalNode < Struct.new(:name); end

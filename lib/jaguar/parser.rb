@@ -634,28 +634,28 @@ module_eval(<<'.,.,', 'grammar.y', 72)
 
 module_eval(<<'.,.,', 'grammar.y', 73)
   def _reduce_28(val, _values, result)
-     result = StaticCallNode.new(val[0], val[2], [])
+     result = StaticCallNode.new(val[0], val[2], [], true)
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 75)
   def _reduce_29(val, _values, result)
-     result = StaticCallNode.new(val[0], val[2], val[4]) 
+     result = StaticCallNode.new(val[0], val[2], val[4], true) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 76)
   def _reduce_30(val, _values, result)
-     result = CallNode.new(val[0], val[2], []) 
+     result = CallNode.new(val[0], val[2], [], true) 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 78)
   def _reduce_31(val, _values, result)
-     result = CallNode.new(val[0], val[2], val[4]) 
+     result = CallNode.new(val[0], val[2], val[4], true) 
     result
   end
 .,.,

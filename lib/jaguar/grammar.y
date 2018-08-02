@@ -71,12 +71,12 @@ rule
   Call:
     IDENTIFIER                            { result = CallNode.new(nil, val[0], []) }
   | IDENTIFIER '(' ArgList ')'            { result = CallNode.new(nil, val[0], val[2]) }
-  | CONSTANT '.' IDENTIFIER               { result = StaticCallNode.new(val[0], val[2], [])}
+  | CONSTANT '.' IDENTIFIER               { result = StaticCallNode.new(val[0], val[2], [], true)}
   | CONSTANT '.' IDENTIFIER
-    '(' ArgList ')'                       { result = StaticCallNode.new(val[0], val[2], val[4]) }
-  | Expression '.' IDENTIFIER             { result = CallNode.new(val[0], val[2], []) }
+    '(' ArgList ')'                       { result = StaticCallNode.new(val[0], val[2], val[4], true) }
+  | Expression '.' IDENTIFIER             { result = CallNode.new(val[0], val[2], [], true) }
   | Expression '.' IDENTIFIER
-    '(' ArgList ')'                       { result = CallNode.new(val[0], val[2], val[4]) }
+    '(' ArgList ')'                       { result = CallNode.new(val[0], val[2], val[4], true) }
   ;
 
   This:

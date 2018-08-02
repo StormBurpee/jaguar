@@ -18,3 +18,5 @@ bob = new Person("Bob")
 jeff.say("test")
 jeff.speak
 Person.count
+
+print(jeff.name)
