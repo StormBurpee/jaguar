@@ -8,6 +8,7 @@ token NUMBER STRING
 token TRUE FALSE NULL
 token IDENTIFIER CONSTANT
 token INDENT DEDENT
+token RETURN
 
 prechigh
   left  '.' EXTENDS STATIC THIS
@@ -29,15 +30,16 @@ expect 1
 
 rule
   Root:
-    /* nothing */                         { result = Nodes.new([]) }
+    /* nothing */                         { result = Nodes.new([], false, nil) }
   | Expressions                           { result = val[0] }
   ;
 
   Expressions:
-    Expression                            { result = Nodes.new(val) }
+    Expression                            { result = Nodes.new(val, false, nil) }
   | Expressions Terminator Expression     { result = val[0] << val[2] }
   | Expressions Terminator                { result = val[0] }
-  | Terminator                            { result = Nodes.new([]) }
+  | Terminator                            { result = Nodes.new([], false, nil) }
+  | Statements                            { result = Nodes.new(val, false, nil) }
   ;
 
   Expression:
@@ -53,6 +55,15 @@ rule
   | Class
   | If
   | '(' Expression ')'                    { result = val[1] }
+  ;
+
+  /* later on implement import/export here */
+  Statements:
+    Return
+  ;
+
+  Return:
+    RETURN Expression                     { result = ReturnNode.new(val[1]) }
   ;
 
   Terminator:

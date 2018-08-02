@@ -1,8 +1,13 @@
 module Jaguar
-  class Nodes < Struct.new(:nodes)
+  class Nodes < Struct.new(:nodes, :returnnode, :returnvalue)
     def <<(node)
       nodes << node
       self
+    end
+
+    def return_node(returnvalue)
+      @returnvalue = returnvalue
+      @returnnode = true
     end
   end
 
@@ -41,6 +46,8 @@ module Jaguar
   class ClassNode < Struct.new(:name, :body, :extends); end
   class SuperNode < Struct.new(:arguments); end
   class NewNode < Struct.new(:classname, :arguments); end
+
+  class ReturnNode < Struct.new(:returnval); end
 
   class IfNode < Struct.new(:condition, :body); end
 end
