@@ -164,6 +164,22 @@ module Jaguar
     end
   end
 
+  class NewNode
+    def eval(context)
+      unless context[classname].is_a?(JaguarClass)
+        raise "'new' can only be used with type of 'Class'."
+      end
+
+      jaguar_class = context[classname]
+      jaguar_class_nc = jaguar_class.new
+
+      if jaguar_class.method_exists("init")
+        jaguar_class.lookup("init").call(jaguar_class_nc, arguments);
+      end
+      jaguar_class_nc
+    end
+  end
+
   class IfNode
     def eval(context)
       if condition.eval(context).ruby_value

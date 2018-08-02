@@ -19,8 +19,8 @@ log: message ->
 helloworld ->
   print("Hello, World!")
 
-jeff = Person.new("Jeff")
-bob = Person.new("Bob")
+jeff = new Person("Jeff")
+bob = new Person("Bob")
 
 jeff.say("test")
-Person.say("test")
+Person.count

@@ -2,7 +2,7 @@ class Parser
 
 token IF ELSE
 token CLASS EXTENDS SUPER
-token STATIC THIS
+token STATIC THIS NEW
 token NEWLINE
 token NUMBER STRING
 token TRUE FALSE NULL
@@ -48,6 +48,7 @@ rule
   | Assign
   | Super
   | FunctionDeclaration
+  | New
   | Class
   | If
   | '(' Expression ')'                    { result = val[1] }
@@ -113,8 +114,13 @@ rule
   | Constant "=" Expression               { result = SetConstantNode.new(val[0], val[2]) }
   ;
 
+  New:
+    NEW CONSTANT                          { result = NewNode.new(val[1], nil) }
+  | NEW CONSTANT "(" ArgList ")"          { result = NewNode.new(val[1], val[3]) }
+  ;
+
   Super:
-    SUPER "(" ArgList ")"              { result = SuperNode.new(val[2]) }
+    SUPER "(" ArgList ")"                 { result = SuperNode.new(val[2]) }
   ;
 
   FunctionDeclaration:

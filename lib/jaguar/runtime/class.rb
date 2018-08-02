@@ -45,11 +45,9 @@ module Jaguar
     end
 
     def lookup_static(method_name, object = false)
-      puts "checking for #{method_name}, in #{@static_methods}"
       method = @static_methods[method_name]
       unless method
         if @runtime_superclass
-          puts "checking parent"
           return @runtime_superclass.lookup_static(method_name)
         else
           raise "Method not found #{method_name}"
