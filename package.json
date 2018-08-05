@@ -1,0 +1,34 @@
+{
+  "name": "jaguarlang",
+  "version": "0.0.0",
+  "description": "JaguarLang, a fast modern programming language that compiles into JavaScript",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/stormburpee/jaguar.git"
+  },
+  "keywords": [
+    "Jaguar",
+    "JaguarLang",
+    "Programming",
+    "Language",
+    "Compiler",
+    "Transpiler"
+  ],
+  "author": "Storm Burpee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/stormburpee/jaguar/issues"
+  },
+  "homepage": "https://gitlab.com/stormburpee/jaguar#README",
+  "devDependencies": {
+    "jison": "^0.4.18"
+  }
+}
