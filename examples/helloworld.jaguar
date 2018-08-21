@@ -1,6 +1,5 @@
-class Hello ->
-  world: ->
-    "Hello, World!"
-
-hello = Hello.new
-print(hello.world)
+@html
+  @head
+    @title 'Hello, World!'
+  @body
+    @h1 'Hello, World!'
