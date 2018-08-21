@@ -1,0 +1,21 @@
+{
+    "name": "stormburpee/jaguar",
+    "description": "Jaguar is a fast templating engine for generating PHP and/or HTML.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Storm Burpee",
+            "email": "stormburpee@gmail.com"
+        }
+    ],
+    "require": {
+      "php": "^7.0.0",
+      "psr/container": "~1.0"
+    },
+    "autoload": {
+      "psr-4": {
+        "Jaguar\\" : "src/Jaguar/"
+      }
+    }
+}
