@@ -11,7 +11,9 @@
     ],
     "require": {
       "php": "^7.0.0",
-      "psr/container": "~1.0"
+      "psr/container": "~1.0",
+        "hoa/compiler": "^3.17",
+        "symfony/finder": "^4.1"
     },
     "autoload": {
       "psr-4": {
