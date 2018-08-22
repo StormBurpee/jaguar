@@ -8,6 +8,10 @@ use Jaguar\Contracts\Compiler\Compiler as CompilerContract;
 
 class JaguarCompiler extends Compiler implements CompilerContract
 {
+    use Concerns\Php\CompilesComments,
+        Concerns\Php\CompilesComponents,
+        Concerns\Php\CompilesConditionals;
+
     protected $extensions = [];
     protected $htmlExtensions = [];
 
