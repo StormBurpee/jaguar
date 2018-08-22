@@ -73,13 +73,13 @@ For more indepth examples, please see the [Examples](examples/) folder.
 It is important to note that wherever a `[block]` is written here, it means either a single line immediately following the template function, or a new line that is indented. The block is terminated when there is a dedent.   
 For example,  
 ```jaguar
-%p [block] {-- Single Line, no new lines. New lines won't be evaluated --}
-{-- Or --}
+%p [block] {{-- Single Line, no new lines. New lines won't be evaluated --}}
+{{-- Or --}}
 %p
-  [block] {-- Block starts here --}
+  [block] {{-- Block starts here --}}
   [block continued]
   [block continued]
-{-- Block ends here, because of dedent --}
+{{-- Block ends here, because of dedent --}}
 ```  
 
 **THIS IS NOT DECIDED YET, IT IS HERE FOR ME TO CONSIDER...**   
@@ -88,12 +88,12 @@ I think that we might do a cheaty for loop similar to lua for loops? We'll see..
 
 Another important thing to note, is that PHP Template functions **do not** need braces.
 ```jaguar
-%foreach($arr as $val)          {-- wrong --}
-%foreach $arr as $val           {-- right --}
-%for($i = 0; $i <= 10; $i++)    {-- wrong --}
-%for $i, 0, 10                  {-- right --}
-%for($i = 10; $i >= 0; $i--)    {-- wrong --}
-%for $i, 10, 0                  {-- right --}
+%foreach($arr as $val)          {{-- wrong --}}
+%foreach $arr as $val           {{-- right --}}
+%for($i = 0; $i <= 10; $i++)    {{-- wrong --}}
+%for $i, 0, 10                  {{-- right --}}
+%for($i = 10; $i >= 0; $i--)    {{-- wrong --}}
+%for $i, 10, 0                  {{-- right --}}
 ```
 
 | Template       | Definition     | Example        |

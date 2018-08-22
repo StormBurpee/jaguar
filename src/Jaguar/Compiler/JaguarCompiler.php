@@ -329,8 +329,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
                 : "<?php elseif (\Jaguar\Support\Facades\Jaguar::check('{$name}')): ?>";
         });
 
-        $this->directive('end'.$name, function() {
-          return '<?php endif; ?>';
+        $this->directive('end'.$name, function () {
+            return '<?php endif; ?>';
         });
     }
 
@@ -342,7 +342,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function check($name, ...$parameters)
     {
-      return call_user_func($this->conditions[$name], ...$parameters);
+        return call_user_func($this->conditions[$name], ...$parameters);
     }
 
     /**
@@ -355,17 +355,17 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function component($path, $alias = null)
     {
-      $alias = $alias ?: array_last(explode('.', $path));
+        $alias = $alias ?: array_last(explode('.', $path));
 
-      $this->directive($alias, function($expression) use ($path) {
-        return $expression
+        $this->directive($alias, function ($expression) use ($path) {
+            return $expression
                 ? "<?php \$__env->startComponent('{$path}', {$expression}); ?>"
                 : "<?php \$__env->startComponent('{$path}'); ?>";
-      });
+        });
 
-      $this->directive('end'.$alias, function($expression) {
-        return '<?php echo $__env->renderComponent(); ?>';
-      });
+        $this->directive('end'.$alias, function ($expression) {
+            return '<?php echo $__env->renderComponent(); ?>';
+        });
     }
 
     /**
@@ -376,13 +376,13 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function include($path, $alias = null)
     {
-      $alias = $alias ?: array_last(explode('.', $path));
+        $alias = $alias ?: array_last(explode('.', $path));
 
-      $this->directive($alias, function($expression) use ($path) {
-        $expression = $this->stripParentheses($expression) ?: '[]';
+        $this->directive($alias, function ($expression) use ($path) {
+            $expression = $this->stripParentheses($expression) ?: '[]';
 
-        return "<?php echo \$__env->make('{$path}', {$expression}, array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>";
-      });
+            return "<?php echo \$__env->make('{$path}', {$expression}, array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>";
+        });
     }
 
     /**
@@ -393,7 +393,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function directive($name, callable $handler)
     {
-      $this->customDirectives[$name] = $handler;
+        $this->customDirectives[$name] = $handler;
     }
 
     /**
@@ -404,7 +404,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function htmlDirective($name, callable $handler)
     {
-      $this->customHtmlDirectives[$name] = $handler;
+        $this->customHtmlDirectives[$name] = $handler;
     }
 
     /**
@@ -413,7 +413,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function getCustomDirectives()
     {
-      return $this->getCustomDirectives;
+        return $this->getCustomDirectives;
     }
 
     /**
@@ -422,7 +422,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function getCustomHtmlDirectives()
     {
-      return $this->customHtmlDirectives;
+        return $this->customHtmlDirectives;
     }
 
     /**
@@ -431,7 +431,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function setEchoFormat($format)
     {
-      $this->echoFormat = $format;
+        $this->echoFormat = $format;
     }
 
     /**
@@ -440,15 +440,15 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     public function withDoubleEncoding()
     {
-      $this->setEchoFormat('e(%s, true)');
+        $this->setEchoFormat('e(%s, true)');
     }
 
     /**
      * Sets the echo format to not double encode entities.
-     * @return void 
+     * @return void
      */
     public function withoutDoubleEncoding()
     {
-      $this->setEchoFormat('e(%s, false)');
+        $this->setEchoFormat('e(%s, false)');
     }
 }
