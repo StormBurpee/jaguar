@@ -88,9 +88,9 @@ abstract class Facade
      */
     protected static function getMockableClass()
     {
-      if($root = static::getFacadeRoot()) {
-        return get_class($root);
-      }
+        if ($root = static::getFacadeRoot()) {
+            return get_class($root);
+        }
     }
 
     /**
@@ -100,11 +100,11 @@ abstract class Facade
      */
     public static function swap($instance)
     {
-      static::$resolvedInstance[static::getFacadeAccessor()] = $instance;
+        static::$resolvedInstance[static::getFacadeAccessor()] = $instance;
 
-      if(isset(static::$app)) {
-        static::$app->instance(static::getFacadeAccessor(), $instance);
-      }
+        if (isset(static::$app)) {
+            static::$app->instance(static::getFacadeAccessor(), $instance);
+        }
     }
 
     /**
@@ -113,7 +113,7 @@ abstract class Facade
      */
     public static function getFacadeRoot()
     {
-      return static::resolveFacadeInstance(static::getFacadeAccessor());
+        return static::resolveFacadeInstance(static::getFacadeAccessor());
     }
 
     /**
@@ -123,7 +123,7 @@ abstract class Facade
      */
     protected static function getFacadeAccessor()
     {
-      throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
+        throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
     }
 
     /**
@@ -133,15 +133,15 @@ abstract class Facade
      */
     protected static function resolveFacadeInstance($name)
     {
-      if(is_object($name)) {
-        return $name;
-      }
+        if (is_object($name)) {
+            return $name;
+        }
 
-      if(isset(static::$resolvedInstance[$name])) {
-        return static::$resolvedInstance[$name];
-      }
+        if (isset(static::$resolvedInstance[$name])) {
+            return static::$resolvedInstance[$name];
+        }
 
-      return static::$resolvedInstance[$name] = static::$app[$name];
+        return static::$resolvedInstance[$name] = static::$app[$name];
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class Facade
      */
     public static function clearResolvedInstance($name)
     {
-      unset(static::$resolvedInstance[$name]);
+        unset(static::$resolvedInstance[$name]);
     }
 
     /**
@@ -160,7 +160,7 @@ abstract class Facade
      */
     public static function clearResolvedInstances()
     {
-      static::$resolvedInstance = [];
+        static::$resolvedInstance = [];
     }
 
     /**
@@ -169,7 +169,7 @@ abstract class Facade
      */
     public static function getFacadeApplication()
     {
-      return static::$app;
+        return static::$app;
     }
 
     /**
@@ -178,7 +178,7 @@ abstract class Facade
      */
     public static function setFacadeApplication($app)
     {
-      static::$app = $app;
+        static::$app = $app;
     }
 
     /**
@@ -189,12 +189,12 @@ abstract class Facade
      */
     public static function __callStatic($method, $args)
     {
-      $instance = static::getFacadeRoot();
+        $instance = static::getFacadeRoot();
 
-      if(! $instance) {
-        throw new RuntimeException("A facade root has not been set.");
-      }
+        if (! $instance) {
+            throw new RuntimeException("A facade root has not been set.");
+        }
 
-      return $instance->$method(...$args);
+        return $instance->$method(...$args);
     }
 }
