@@ -10,7 +10,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
 {
     use Concerns\Php\CompilesComments,
         Concerns\Php\CompilesComponents,
-        Concerns\Php\CompilesConditionals;
+        Concerns\Php\CompilesConditionals,
+        Concerns\Php\CompilesEchos;
 
     protected $extensions = [];
     protected $htmlExtensions = [];
