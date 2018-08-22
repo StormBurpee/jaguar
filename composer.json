@@ -1,24 +1,22 @@
 {
-    "name": "stormburpee/jaguar",
-    "description": "Jaguar is a fast templating engine for generating PHP and/or HTML.",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Storm Burpee",
-            "email": "stormburpee@gmail.com"
-        }
-    ],
-    "require": {
-      "php": "^7.0.0",
-      "psr/container": "~1.0",
-        "hoa/compiler": "^3.17",
-        "symfony/finder": "^4.1",
-        "ramsey/uuid": "^3.8"
-    },
-    "autoload": {
-      "psr-4": {
-        "Jaguar\\" : "src/Jaguar/"
-      }
+  "name": "stormburpee/jaguar",
+  "description": "Jaguar is a fast templating engine for generating PHP and/or HTML.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [{
+    "name": "Storm Burpee",
+    "email": "stormburpee@gmail.com"
+  }],
+  "require": {
+    "php": "^7.0.0",
+    "psr/container": "~1.0",
+    "symfony/finder": "^4.1",
+    "ramsey/uuid": "^3.8",
+    "mockery/mockery": "^1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jaguar\\": "src/Jaguar/"
     }
+  }
 }

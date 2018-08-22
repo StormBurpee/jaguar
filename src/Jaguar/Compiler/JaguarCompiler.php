@@ -9,6 +9,7 @@ use Jaguar\Contracts\Compiler\Compiler as CompilerContract;
 class JaguarCompiler extends Compiler implements CompilerContract
 {
     protected $extensions = [];
+    protected $htmlExtensions = [];
 
     /**
     * All custom Html Template Functions
@@ -157,4 +158,109 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
       return $value;
     }
+
+    protected function compileStatements($value)
+    {
+        return preg_replace_callback(
+          '/\B%(%?\w+(?:::\w+)?)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x', function($match) {
+            return $this->compileStatement($match);
+          }, $value
+        );
+    }
+
+    protected function compileStatement($match)
+    {
+      if(Str::contains($match[1], '%')) {
+        $match[0] = isset($match[3]) ? $match[1].$match[3] : $match[1];
+      } elseif (isset($this->customDirectives[$match[1]])) {
+        $match[0] = $this->callCustomDirective($match[1], Arr::get($match, 3));
+      } elseif (method_exists($this, $method = 'compile'.ucfirst($match[1]))) {
+        $match[0] = $this->$method(Arr::get($match, 3));
+      }
+
+      return isset($match[3]) ? $match[0] : $match[0].$match[2];
+    }
+
+    protected function callCustomDirective($name, $value)
+    {
+      if(Str::startsWith($value, '(') && Str::endsWith($value, ')')) {
+        $value = Str::substr($value, 1, -1);
+      }
+
+      return call_user_func($this->customDirectives[$name], trim($value));
+    }
+
+    protected function callCustomHtmlDirective($name, $value)
+    {
+      if(Str::startsWith($value, '(') && Str::endsWith($value, ')')) {
+        $value = Str::substr($value, 1, -1);
+      }
+
+      return call_user_func($this->customDirectives[$name], trim($value));
+    }
+
+    public function stripParentheses($expression)
+    {
+      if(Str::startsWith($expression, '(')) {
+        $expression = substr($expression, 1, -1);
+      }
+
+      return $expression;
+    }
+
+    /**
+     * Register a custom Jaguar PHP Compiler
+     * @param  callable $compiler Custom PHP Compiler
+     * @return void
+     */
+    public function extend(callable $compiler)
+    {
+      $this->extensions[] = $compiler;
+    }
+
+    /**
+     * Register a custom Jaguar HTML Compiler
+     * @param  callable $compiler Custom HTML Compiler
+     * @return void
+     */
+    public function extendHtml(callable $compiler)
+    {
+      $this->htmlExtensions[] = $compiler;
+    }
+
+    /**
+     * Get all Jaguar PHP Extensions used by the Jaguar Compiler
+     * @return array
+     */
+    public function getExtensions()
+    {
+      return $this->extensions;
+    }
+
+    /**
+     * Get all Jaguar HTML Extensions used by the Jaguar Compiler
+     * @return array
+     */
+    public function getHtmlExtensions()
+    {
+      return $this->htmlExtensions;
+    }
+
+    /**
+     * Register an "if" conditional statement directive
+     * @param  string   $name     name of directive
+     * @param  callable $callback Callback function
+     * @return void
+     */
+    public function if($name, callable $callback)
+    {
+      $this->conditions[$name] = $callback;
+
+      $this->directive($name, function($expression) use ($name) {
+        return $expression !== ''
+                ? "<?php if(): ?>"
+                : "<?php if(): ?>";
+      });
+    }
+
 }
