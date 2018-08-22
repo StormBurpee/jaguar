@@ -11,7 +11,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
     use Concerns\Php\CompilesComments,
         Concerns\Php\CompilesComponents,
         Concerns\Php\CompilesConditionals,
-        Concerns\Php\CompilesEchos;
+        Concerns\Php\CompilesEchos,
+        Concerns\Php\CompilesHelpers;
 
     protected $extensions = [];
     protected $htmlExtensions = [];
@@ -65,6 +66,12 @@ class JaguarCompiler extends Compiler implements CompilerContract
      * @var array
      */
     protected $contentTags = ['{{', '}}'];
+
+    /**
+     * Array of opening and closing tags for comments.
+     * @var array
+     */
+    protected $commentTags = ['{{--', '--}}'];
 
     /**
      * Array of opening and closing tags for escaped echos
