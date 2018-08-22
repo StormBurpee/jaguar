@@ -1,0 +1,15 @@
+@html
+  @head
+    @title 'Indepth Example'
+    @meta{name: 'description', content: 'content here'}
+    {-- Comment Example --}
+    {-- Inline Style Example --}
+    @style
+      .title
+        font-size: 26px
+        color: #ff0000
+
+  @body
+    @h1.title 'Indepth Example'
+    %e $name = "World"
+    {{ "Hello, $name!"}}
