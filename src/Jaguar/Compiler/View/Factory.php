@@ -13,16 +13,47 @@ use Jaguar\Contracts\Compiler\View\Factory as FactoryContract;
 
 class Factory implements FactoryContract
 {
+
+    use Concerns\ManagesComponents,
+        Concerns\ManagesEvents,
+        Concerns\ManagesLayouts,
+        Concerns\ManagesLoops,
+        Concerns\ManagesStacks;
+
+    /**
+     * The engine implementation
+     * @var \Jaguar\Compiler\Engines\EnginesResolver
+     */
     protected $engines;
 
+    /**
+     * The view finder implementation.
+     * @var \Jaguar\View\ViewFinderInterface
+     */
     protected $finder;
 
+    /**
+     * The event dispatcher instance.
+     * @var \Jaguar\Contracts\Events\Dispatcher
+     */
     protected $events;
 
+    /**
+     * The IoC Container instance.
+     * @var \Jaguar\Contracts\Container\Container
+     */
     protected $container;
 
+    /**
+     * Data that should be available to all templates
+     * @var array
+     */
     protected $shared = [];
 
+    /**
+     * The extension to engine bindings.
+     * @var array
+     */
     protected $extensions = [
     '.jaguar' => 'jaguar',
     '.jag' => 'jaguar',
