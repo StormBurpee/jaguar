@@ -101,7 +101,6 @@ Another important thing to note, is that PHP Template functions **do not** need 
 | `%eval [expression]` | Evaluates a single line of PHP `[expression]`, for multiple lines use `%php` | `%e $name = 'jeff'` |
 | `%e [expression]` | Alias of `%eval` | `%e $name = 'Jeff'` |
 | `%php [block]` | Evaluates a block of PHP | `%php $name = 'Jeff'` |
-| `%p [block]` | Alias of `%php` | `%php $name = 'Jeff'` |
 | `%foreach [array] as [var] [block]` | Alias of PHP foreach function. | `%foreach $arr as $val echo($val)` |
 | `%for [var], [start], [end] [block]` | Alias of PHP for loop. All for loops are inclusive of the end. (i.e. <=, >=) | `%for $i, 0, 10 echo($i)`|
 

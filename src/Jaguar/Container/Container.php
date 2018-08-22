@@ -126,7 +126,7 @@ class Container implements ArrayAccess, ContainerContract
     }
 
     return isset($this->phpResolved[$abstract]) ||
-           isset($this->pInstances[$abstract]);hp
+           isset($this->phpInstances[$abstract]);
   }
 
   public function isHtmlShared($abstract)
@@ -395,7 +395,7 @@ class Container implements ArrayAccess, ContainerContract
       }
 
       foreach((array) $abstracts as $abstract) {
-        $this->htmlTags[$tag][] = abstract;
+        $this->htmlTags[$tag][] = $abstract;
       }
     }
   }
@@ -410,7 +410,7 @@ class Container implements ArrayAccess, ContainerContract
       }
 
       foreach((array) $abstracts as $abstract) {
-        $this->phpTags[$tag][] = abstract;
+        $this->phpTags[$tag][] = $abstract;
       }
     }
   }
