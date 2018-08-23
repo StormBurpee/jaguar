@@ -20,6 +20,12 @@ abstract class Compiler
     protected $compilePath;
 
     /**
+     * The path to the Composer autoload file.
+     * @var string
+     */
+    protected $autoload;
+
+    /**
      * Create a new compiler instance.
      * @param \Jaguar\Support\Filesystem\Filesystem $files
      * @param string     $compilePath
@@ -28,6 +34,16 @@ abstract class Compiler
     {
         $this->files = $files;
         $this->compilePath = $compilePath;
+    }
+
+    /**
+     * Sets the Autoload path for the Composer Autoloader.
+     * @param string $path
+     * @return void
+     */
+    public function setAutoload($path)
+    {
+        $this->autoload = $path;
     }
 
     /**

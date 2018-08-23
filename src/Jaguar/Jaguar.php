@@ -7,6 +7,9 @@ use Jaguar\Support\Filesystem\Filesystem;
 
 class Jaguar
 {
+
+    const VERSION = '0.1.0';
+
     /**
      * The reference to the JaguarCompiler
      * @var \Jaguar\Compiler\JaguarCompiler
@@ -19,10 +22,26 @@ class Jaguar
      */
     protected $compiledOutput;
 
-    public function __construct($compiledOutput = './build')
+    protected $basepath;
+
+    protected $autoload;
+
+    public function __construct($basepath = null, $compiledOutput = null, $autoload = null)
     {
+        if ($basepath) {
+            $this->basepath = $basepath;
+        }
+        if (! $compiledOutput) {
+            $compiledOutput = $this->basepath.'/build';
+        }
+        if (! $autoload) {
+            $autoload = realpath($this->basepath.'/../vendor/autoload.php');
+        }
+
+        $this->autoload = $autoload;
         $this->compiledOutput = $compiledOutput;
         $this->compiler = new JaguarCompiler(new Filesystem(), $this->compiledOutput);
+        $this->compiler->setAutoload($this->autoload);
     }
 
     /**
@@ -32,8 +51,19 @@ class Jaguar
      */
     public function setCompiledPath($path)
     {
-      $this->compiledOutput = $path;
-      $this->compiler->setCompilePath($path);
+        $this->compiledOutput = $path;
+        $this->compiler->setCompilePath($path);
+    }
+
+    /**
+     * Sets the Autoload path for the Composer Autoloader.
+     * @param string $path
+     * @return void
+     */
+    public function setAutoload($path)
+    {
+        $this->autoload = $path;
+        $this->compiler->setAutoload($this->autoload);
     }
 
     /**
@@ -42,7 +72,7 @@ class Jaguar
      */
     public function getCompiledPath()
     {
-      return $this->compiledOutput;
+        return $this->compiledOutput;
     }
 
     /**
@@ -55,5 +85,15 @@ class Jaguar
     public function compile($path)
     {
         $this->compiler->compile($path);
+    }
+
+    public static function getVersion()
+    {
+      return static::VERSION;
+    }
+
+    public static function getVersionString()
+    {
+      return 'v' . static::VERSION;
     }
 }

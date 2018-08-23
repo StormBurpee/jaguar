@@ -19,7 +19,7 @@
   "autoload": {
     "files": [
       "src/Jaguar/Foundation/helpers.php",
-      "src/Jaguar/Foundation/Support/helpers.php"
+      "src/Jaguar/Support/helpers.php"
     ],
     "psr-4": {
       "Jaguar\\": "src/Jaguar/"
