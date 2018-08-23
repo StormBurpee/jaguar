@@ -1,5 +1,9 @@
 # Jaguar Lang
 
+**THIS IS THE DECOUPLED JAGUAR COMPILER**   
+**IMPORTANT:** This branch will be moving to it's own repo in the near future.  
+Work in this branch is no longer active, and will be picked up again when the 'jaguar/decoupled' branch is created.   
+
 This repo is for the new open source Jaguar Language.   
 Jaguar is a fast templating engine for generating PHP And/Or HTML.    
 Jaguar can be implemented and extended easily as well, in order to suit your needs. This is explained in the **Expanding Jaguar** section.   
