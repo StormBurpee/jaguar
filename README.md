@@ -137,7 +137,33 @@ Examples on implementing custom HTML Template Functions like this, are in the **
 
 
 ## Expanding Jaguar  
+Jaguar provides an easy and quick way of registering extensions, directives and more to the underlying Jaguar Compiler.  
+These extensions are split into two seperate categories. 'Core' and 'Html'. Core refers to PHP template functions and Html refers to custom Html template functions.   
+This section will be split up according to those.   
 
+### Expanding Overview   
+Any extensions onto the Jaguar Compiler are all handled by the `Jaguar\Extensions\Extensions` class.   
+```php
+use Jaguar\Extensions\Extensions;
+
+Extensions::registerCompilerDirective('hello', function($expression) {
+  return "<?php echo 'Hello, World!'; ?>";
+});
+```
+As shown above, it is simple to access and extend the Jaguar Compiler's Extension Engine. For example, the following allows you to now do the following in any template,  
+```jaguar
+%hello
+```
+Which would compile too,
+```html
+<?php echo 'Hello, World!'; ?>
+```
+
+### Core Extensions
+TODO
+
+### Html Extensions
+TODO
 
 ## Etc   
 

@@ -1,0 +1,7 @@
+{-- This is a file to give an example of custom extensions working. --}
+{-- The custom extensions here are registered in the 'compile.php' file in the parent directory. --}
+@html
+  @head
+    @title 'Custom Directives'
+  @body
+    @h1 %jaguar

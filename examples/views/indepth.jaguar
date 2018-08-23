@@ -11,5 +11,22 @@
 
   @body
     @h1.title 'Indepth Example'
-    %e $name = "World"
-    {{ "Hello, $name!"}}
+    %eval($name = "World")
+    {{ "Hello, $name!" }}
+
+    %if(1 == 1)
+      @h2 '1 == 1'
+    %endif {-- Really want to get rid of this --}
+
+    %unless(1 == 2)
+      @h2 '1 != 1'
+    %endunless
+
+    %php
+      $name = "Jeff"
+    %endphp
+
+    %p '{{ "Bye, $name" }}'
+
+    %json
+    %notjson

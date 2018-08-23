@@ -14,6 +14,23 @@
 
   @body
     @h1.title 'Indepth Example'
-    %e  $name = "World"
+    <?php ($name = "World"); ?>
     <?php echo e("Hello, $name!"); ?>
 
+
+    <?php if(1 == 1): ?>
+      @h2 '1 == 1'
+    <?php endif; ?> 
+
+    <?php if (! (1 == 2)): ?>
+      @h2 '1 != 1'
+    <?php endif; ?>
+
+    <?php 
+      $name = "Jeff"
+     ?>
+
+    %p  '<?php echo e("Bye, $name"); ?>'
+
+    %json
+    %notjson

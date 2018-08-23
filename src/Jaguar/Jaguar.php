@@ -10,11 +10,13 @@ class Jaguar
 {
     const VERSION = '0.1.0';
 
+    protected static $instance;
+
     /**
      * The reference to the JaguarCompiler
      * @var \Jaguar\Compiler\JaguarCompiler
      */
-    protected $compiler;
+    protected static $compiler;
 
     /**
      * The path where views will be compiled too.
@@ -32,6 +34,8 @@ class Jaguar
     {
         if ($basepath) {
             $this->basepath = $basepath;
+        } else {
+            $this->basepath = realpath('./');
         }
         if (! $compiledOutput) {
             $compiledOutput = $this->basepath.'/build';
@@ -43,8 +47,15 @@ class Jaguar
         $this->autoload = $autoload;
         $this->compiledOutput = $compiledOutput;
         $this->filesystem = new Filesystem();
-        $this->compiler = new JaguarCompiler($this->filesystem, $this->compiledOutput);
-        $this->compiler->setAutoload($this->autoload);
+
+        if (! static::$instance) {
+            static::$instance = $this;
+            static::$compiler = new JaguarCompiler($this->filesystem, $this->compiledOutput);
+        } else {
+            $this->setCompiledPath($this->compiledOutput);
+        }
+
+        static::$compiler->setAutoload($this->autoload);
     }
 
     /**
@@ -55,7 +66,7 @@ class Jaguar
     public function setCompiledPath($path)
     {
         $this->compiledOutput = $path;
-        $this->compiler->setCompilePath($path);
+        static::$compiler->setCompilePath($path);
     }
 
     /**
@@ -66,7 +77,7 @@ class Jaguar
     public function setAutoload($path)
     {
         $this->autoload = $path;
-        $this->compiler->setAutoload($this->autoload);
+        static::$compiler->setAutoload($this->autoload);
     }
 
     /**
@@ -87,7 +98,7 @@ class Jaguar
      */
     public function compile($path)
     {
-        $this->compiler->compile($path);
+        static::$compiler->compile($path);
     }
 
     /**
@@ -105,8 +116,20 @@ class Jaguar
         $files = $this->filesystem->allFiles($path);
 
         foreach ($files as $file) {
-          $this->compiler->compile($file);
+            $extension = $this->filesystem->extension($file);
+            if ($extension == "jaguar" || $extension == "jag") {
+                static::$compiler->compile($file);
+            }
         }
+    }
+
+    /**
+     * Gets the Jaguar Compiler
+     * @return \Jaguar\Compiler\JaguarCompiler
+     */
+    public function getCompiler()
+    {
+        return static::$compiler;
     }
 
     public static function getVersion()
@@ -117,5 +140,13 @@ class Jaguar
     public static function getVersionString()
     {
         return 'v' . static::VERSION;
+    }
+
+    public static function getInstance()
+    {
+        if (! static::$instance) {
+            static::$instance = new static;
+        }
+        return static::$instance;
     }
 }

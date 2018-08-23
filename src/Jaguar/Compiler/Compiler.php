@@ -46,6 +46,10 @@ abstract class Compiler
         $this->autoload = $path;
     }
 
+    public function setFilesystem(Filesystem $files) {
+      $this->files = $files;
+    }
+
     /**
      * Gets the compiled path of a view at $path.
      * @param  string $path

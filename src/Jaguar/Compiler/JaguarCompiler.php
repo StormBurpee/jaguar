@@ -10,7 +10,9 @@ use Jaguar\Contracts\Compiler\Compiler as CompilerContract;
 class JaguarCompiler extends Compiler implements CompilerContract
 {
     use Concerns\Php\CompilesComments,
-        Concerns\Php\CompilesEchos;
+        Concerns\Php\CompilesConditionals,
+        Concerns\Php\CompilesEchos,
+        Concerns\Php\CompilesRawPhp;
 
     /**
      * All registered Jaguar PHP Extensions.
