@@ -8,5 +8,8 @@ use Jaguar\Extensions\Extensions;
 $jaguar = new Jaguar(realpath(__dir__.'./'));
 
 // Register Custom Extension.
+Extensions::registerCompilerDirective("jaguar", function($expression) {
+  return "Jaguar " . Jaguar::getVersionString();
+});
 
 $jaguar->compileDirectory(__DIR__.'/views');
