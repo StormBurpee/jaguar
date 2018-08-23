@@ -2,12 +2,12 @@
 
 namespace Jaguar;
 
+use InvalidArgumentException;
 use Jaguar\Compiler\JaguarCompiler;
 use Jaguar\Support\Filesystem\Filesystem;
 
 class Jaguar
 {
-
     const VERSION = '0.1.0';
 
     /**
@@ -26,6 +26,8 @@ class Jaguar
 
     protected $autoload;
 
+    protected $filesystem;
+
     public function __construct($basepath = null, $compiledOutput = null, $autoload = null)
     {
         if ($basepath) {
@@ -40,7 +42,8 @@ class Jaguar
 
         $this->autoload = $autoload;
         $this->compiledOutput = $compiledOutput;
-        $this->compiler = new JaguarCompiler(new Filesystem(), $this->compiledOutput);
+        $this->filesystem = new Filesystem();
+        $this->compiler = new JaguarCompiler($this->filesystem, $this->compiledOutput);
         $this->compiler->setAutoload($this->autoload);
     }
 
@@ -87,13 +90,32 @@ class Jaguar
         $this->compiler->compile($path);
     }
 
+    /**
+     * Compiles all views in a given path.
+     * @param  string $path
+     * @param  bool $recursive
+     * @return void
+     */
+    public function compileDirectory($path, $recursive = true)
+    {
+        if (! $this->filesystem->isDirectory($path)) {
+            throw new InvalidArgumentException("Path given is not a directory.");
+        }
+
+        $files = $this->filesystem->allFiles($path);
+
+        foreach ($files as $file) {
+          $this->compiler->compile($file);
+        }
+    }
+
     public static function getVersion()
     {
-      return static::VERSION;
+        return static::VERSION;
     }
 
     public static function getVersionString()
     {
-      return 'v' . static::VERSION;
+        return 'v' . static::VERSION;
     }
 }

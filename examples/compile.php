@@ -6,4 +6,4 @@ use Jaguar\Jaguar;
 
 $jaguar = new Jaguar(realpath(__dir__.'./'));
 
-$jaguar->compile(__DIR__.'/views/helloworld.jaguar');
+$jaguar->compileDirectory(__DIR__.'/views');
