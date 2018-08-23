@@ -41,6 +41,16 @@ abstract class Compiler
     }
 
     /**
+     * Sets the base compile path of compiled views.
+     * @param string $path
+     * @return void
+     */
+    public function setCompilePath($path)
+    {
+        $this->compilePath = $path;
+    }
+
+    /**
      * Gets if the compiled version of the view at path is expired.
      * @param  string  $path
      * @return boolean
