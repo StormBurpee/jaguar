@@ -840,7 +840,8 @@ class Container implements ArrayAccess, ContainerContract
     protected function hasParameterOverride($dependency)
     {
         return array_key_exists(
-            $dependency->name, $this->getLastParameterOverride()
+            $dependency->name,
+            $this->getLastParameterOverride()
         );
     }
 
@@ -1000,7 +1001,8 @@ class Container implements ArrayAccess, ContainerContract
         $this->fireCallbackArray($object, $this->globalResolvingCallbacks);
 
         $this->fireCallbackArray(
-            $object, $this->getCallbacksForType($abstract, $object, $this->resolvingCallbacks)
+            $object,
+            $this->getCallbacksForType($abstract, $object, $this->resolvingCallbacks)
         );
 
         $this->fireAfterResolvingCallbacks($abstract, $object);
@@ -1018,7 +1020,8 @@ class Container implements ArrayAccess, ContainerContract
         $this->fireCallbackArray($object, $this->globalAfterResolvingCallbacks);
 
         $this->fireCallbackArray(
-            $object, $this->getCallbacksForType($abstract, $object, $this->afterResolvingCallbacks)
+            $object,
+            $this->getCallbacksForType($abstract, $object, $this->afterResolvingCallbacks)
         );
     }
 
