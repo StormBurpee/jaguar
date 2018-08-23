@@ -4,6 +4,11 @@ This repo is for the new open source Jaguar Language.
 Jaguar is a fast templating engine for generating PHP And/Or HTML.    
 Jaguar can be implemented and extended easily as well, in order to suit your needs. This is explained in the **Expanding Jaguar** section.   
 
+**This is the standalone compiler.**  
+Work on the 'Decoupled Laravel' version can be seen in the 'decoupled' branch.  
+The decoupled version provides an easy way to intergrate into Laravel, and also to provide an environment similar to laravel, and how it   
+serves it's views. This _**standalone**_ version simply compiles the '.jaguar|.jag' files to core PHP.
+
 Jaguar comes implemented with a few handy modules as well, for example compiling inline styles written in SCSS. These modules can be found in the   
 [Modules](src/modules) folder. These extensions should also be a good learning platform for extending Jaguar to your needs, as everything is injected as a module.  
 
@@ -73,13 +78,13 @@ For more indepth examples, please see the [Examples](examples/) folder.
 It is important to note that wherever a `[block]` is written here, it means either a single line immediately following the template function, or a new line that is indented. The block is terminated when there is a dedent.   
 For example,  
 ```jaguar
-%p [block] {{-- Single Line, no new lines. New lines won't be evaluated --}}
-{{-- Or --}}
+%p [block] {-- Single Line, no new lines. New lines won't be evaluated --}
+{-- Or --}
 %p
-  [block] {{-- Block starts here --}}
+  [block] {-- Block starts here --}
   [block continued]
   [block continued]
-{{-- Block ends here, because of dedent --}}
+{-- Block ends here, because of dedent --}
 ```  
 
 **THIS IS NOT DECIDED YET, IT IS HERE FOR ME TO CONSIDER...**   
@@ -88,12 +93,12 @@ I think that we might do a cheaty for loop similar to lua for loops? We'll see..
 
 Another important thing to note, is that PHP Template functions **do not** need braces.
 ```jaguar
-%foreach($arr as $val)          {{-- wrong --}}
-%foreach $arr as $val           {{-- right --}}
-%for($i = 0; $i <= 10; $i++)    {{-- wrong --}}
-%for $i, 0, 10                  {{-- right --}}
-%for($i = 10; $i >= 0; $i--)    {{-- wrong --}}
-%for $i, 10, 0                  {{-- right --}}
+%foreach($arr as $val)          {-- wrong --}
+%foreach $arr as $val           {-- right --}
+%for($i = 0; $i <= 10; $i++)    {-- wrong --}
+%for $i, 0, 10                  {-- right --}
+%for($i = 10; $i >= 0; $i--)    {-- wrong --}
+%for $i, 10, 0                  {-- right --}
 ```
 
 | Template       | Definition     | Example        |

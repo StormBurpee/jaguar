@@ -2,6 +2,7 @@
 
 namespace Jaguar\Compiler;
 
+use Jaguar\Jaguar;
 use Jaguar\Support\Arr;
 use Jaguar\Support\Str;
 use Jaguar\Contracts\Compiler\Compiler as CompilerContract;
@@ -9,151 +10,143 @@ use Jaguar\Contracts\Compiler\Compiler as CompilerContract;
 class JaguarCompiler extends Compiler implements CompilerContract
 {
     use Concerns\Php\CompilesComments,
-        Concerns\Php\CompilesComponents,
-        Concerns\Php\CompilesConditionals,
-        Concerns\Php\CompilesEchos,
-        Concerns\Php\CompilesHelpers,
-        Concerns\Php\CompilesIncludes,
-        Concerns\Php\CompilesJson,
-        Concerns\Php\CompilesLayouts,
-        Concerns\Php\CompilesLoops,
-        Concerns\Php\CompilesRawPhp,
-        Concerns\Php\CompilesStacks;
+        Concerns\Php\CompilesEchos;
 
+    /**
+     * All registered Jaguar PHP Extensions.
+     * @var array
+     */
     protected $extensions = [];
+
+    /**
+     * All registered Jaguar HTML Extensions.
+     * @var array
+     */
     protected $htmlExtensions = [];
 
     /**
-    * All custom Html Template Functions
-    *
-    * @var array
-    */
-    protected $customHtmlDirectives = [];
-
-    /**
-    * All custom Php Template Functions
-    *
-    * @var array
-    */
+     * All registered custom Jaguar PHP directives.
+     * @var array
+     */
     protected $customDirectives = [];
 
     /**
-    * All custom Php condition handlers
-    *
-    * @var array
-    */
+     * All registered custom Jaguar HTML Extensions.
+     * @var array
+     */
+    protected $customHtmlDirectives = [];
+
+    /**
+     * All registered custom Jaguar PHP condition handlers.
+     * @var array
+     */
     protected $conditions = [];
 
     /**
-     * The file currently being compiled
+     * The file that is currently being compiled.
      * @var string
      */
     protected $path;
 
     /**
-     * All of the available compiler functions
+     * All of the available functions the Jaguar compiler can parse.
      * @var array
      */
     protected $compilers = [
       'Comments',
       'Extensions',
+      'HtmlExtensions',
       'Statements',
+      'HtmlStatements',
       'Echos',
     ];
 
     /**
-     * Array of openeing and closing tags for raw echos
+     * Array of opening and closing tags for raw echos.
      * @var array
      */
     protected $rawTags = ['{!!', '!!}'];
 
     /**
-     * Array of opening and closing tags for echos
+     * Array of opening and closing tags for echos.
      * @var array
      */
     protected $contentTags = ['{{', '}}'];
 
     /**
-     * Array of opening and closing tags for comments.
+     * Array of opening and closing tags for Jaguar comments.
      * @var array
      */
-    protected $commentTags = ['{{--', '--}}'];
+    protected $commentTags = ['{--', '--}'];
 
     /**
-     * Array of opening and closing tags for escaped echos
+     * Array of opening and closing tags for escaped echos.
      * @var array
      */
     protected $escapedTags = ['{{{', '}}}'];
 
     /**
-     * the regular echo string format.
+     * The regular echo string format.
      * @var string
      */
     protected $echoFormat = 'e(%s)';
 
     /**
-     * Array of footer lines to be added to the tamplate.
+     * Array of header lines that will be added to the template.
+     * @var array
+     */
+    protected $header = [];
+
+    /**
+     * Array of footer lines that will be added to the template.
      * @var array
      */
     protected $footer = [];
 
     /**
-     * Array to temporarily store the raw blocks found in the template.
+     * Array to temporarily store raw blocks that are found in the template.
      * @var array
      */
     protected $rawBlocks = [];
 
-    /**
-     * Compiles the jaguar view at the given path.
-     * @param  string $path
-     * @return void
-     */
     public function compile($path = null)
     {
         if ($path) {
             $this->setPath($path);
         }
 
-        if (! is_null($this->cachePath)) {
+        if (! is_null($this->compilePath)) {
             $contents = $this->compileString($this->files->get($this->getPath()));
 
-            $this->files->put($this->getCompiledPath($this->geTPath()), $contents);
+            $this->files->put($this->getCompiledPath($this->getPath()), $contents);
         }
     }
 
-    /**
-     * Gets the path currently being compiled.
-     * @return string
-     */
     public function getPath()
     {
         return $this->path;
     }
 
-    /**
-     * Sets the path currently being compiled.
-     * @param string $path
-     * @return void
-     */
     public function setPath($path)
     {
         $this->path = $path;
     }
 
-    /**
-     * Compile the given Jaguar template contents.
-     * @param  string $value
-     * @return string
-     */
     public function compileString($value)
     {
         $this->footer = [];
+        $this->header = [];
+        $this->header[] = "<!-- Compiled by the Jaguar Compiler " . Jaguar::getVersionString() . ". -->";
+        if($this->autoload) {
+          $this->header[] = "<?php require_once '" . $this->autoload ."'; ?>";
+        }
 
         if (strpos($value, '%php') !== false) {
             $value = $this->storePhpBlocks($value);
         }
 
         $result = '';
+        $result = $this->addHeaders($result);
 
         foreach (token_get_all($value) as $token) {
             $result .= is_array($token) ? $this->parseToken($token) : $token;
@@ -178,16 +171,16 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     protected function storePhpBlocks($value)
     {
-        return preg_replace_callback('/(?<!%|@)%php(.*?)%endphp/s', function ($matches) {
-            return $this->storeRawBlock("<?php{$matches[1]}?>");
+        return preg_replace_callback('/(?<!%)%php(.*?)%endphp/s', function ($matches) {
+            return $this->storeRawBlock("<?php {$matches[1]} ?>");
         }, $value);
     }
 
     protected function storeRawBlock($value)
     {
         return $this->getRawPlaceholder(
-          array_push($this->rawBlocks, $value) - 1
-        );
+        array_push($this->rawBlocks, $value) - 1
+      );
     }
 
     protected function restoreRawContent($result)
@@ -206,16 +199,20 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return str_replace('#', $replace, '%__raw_block_#__%');
     }
 
+    protected function addHeaders($result)
+    {
+      return implode(PHP_EOL, $this->header) . PHP_EOL . PHP_EOL . ltrim($result, PHP_EOL);
+    }
+
     protected function addFooters($result)
     {
         return ltrim($result, PHP_EOL)
-              .PHP_EOL.implode(PHP_EOL, array_reverse($this->footer));
+            .PHP_EOL.implode(PHP_EOL, array_reverse($this->footer));
     }
 
     protected function parseToken($token)
     {
         list($id, $content) = $token;
-
         if ($id == T_INLINE_HTML) {
             foreach ($this->compilers as $type) {
                 $content = $this->{"compile{$type}"}($content);
@@ -225,7 +222,6 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return $content;
     }
 
-    // TODO: Come back to here when you implement html extensions
     protected function compileExtensions($value)
     {
         foreach ($this->extensions as $compiler) {
@@ -235,15 +231,27 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return $value;
     }
 
+    protected function compileHtmlExtensions($value)
+    {
+        // TODO: this
+        return $value;
+    }
+
     protected function compileStatements($value)
     {
         return preg_replace_callback(
-          '/\B%(%?\w+(?:::\w+)?)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x',
-            function ($match) {
-                return $this->compileStatement($match);
-            },
-            $value
-        );
+        '/\B%(%?\w+(?:::\w+)?)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x',
+          function ($match) {
+              return $this->compileStatement($match);
+          },
+          $value
+      );
+    }
+
+    protected function compileHtmlStatements($value)
+    {
+        // TODO: this
+        return $value;
     }
 
     protected function compileStatement($match)
@@ -259,6 +267,12 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return isset($match[3]) ? $match[0] : $match[0].$match[2];
     }
 
+    protected function compileHtmlStatement($match)
+    {
+        // TODO: this
+        return $match;
+    }
+
     protected function callCustomDirective($name, $value)
     {
         if (Str::startsWith($value, '(') && Str::endsWith($value, ')')) {
@@ -270,11 +284,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
     protected function callCustomHtmlDirective($name, $value)
     {
-        if (Str::startsWith($value, '(') && Str::endsWith($value, ')')) {
-            $value = Str::substr($value, 1, -1);
-        }
-
-        return call_user_func($this->customDirectives[$name], trim($value));
+        // TODO: this
     }
 
     public function stripParentheses($expression)
@@ -286,53 +296,39 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return $expression;
     }
 
-    /**
-     * Register a custom Jaguar PHP Compiler
-     * @param  callable $compiler Custom PHP Compiler
-     * @return void
-     */
     public function extend(callable $compiler)
     {
         $this->extensions[] = $compiler;
     }
 
-    /**
-     * Register a custom Jaguar HTML Compiler
-     * @param  callable $compiler Custom HTML Compiler
-     * @return void
-     */
     public function extendHtml(callable $compiler)
     {
         $this->htmlExtensions[] = $compiler;
     }
 
-    /**
-     * Get all Jaguar PHP Extensions used by the Jaguar Compiler
-     * @return array
-     */
     public function getExtensions()
     {
         return $this->extensions;
     }
 
-    /**
-     * Get all Jaguar HTML Extensions used by the Jaguar Compiler
-     * @return array
-     */
     public function getHtmlExtensions()
     {
         return $this->htmlExtensions;
     }
 
     /**
-     * Register an "if" conditional statement directive
-     * @param  string   $name     name of directive
-     * @param  callable $callback Callback function
+     * Register an "if" conditional statement directive.
+     * @param  string   $name
+     * @param  callable $callback
      * @return void
-     * @todo remove the 'end' directives and change to dedent.
+     * @todo Implement this function, as the Standalone Jaguar Compiler has not got this implemented from the 'Decoupled Laravel' Jaguar Compiler.
      */
     public function if($name, callable $callback)
     {
+        // TODO: this
+      //
+      /*
+        How this works in the 'Decoupled Laravel' version of Jaguar
         $this->conditions[$name] = $callback;
 
         $this->directive($name, function ($expression) use ($name) {
@@ -350,29 +346,26 @@ class JaguarCompiler extends Compiler implements CompilerContract
         $this->directive('end'.$name, function () {
             return '<?php endif; ?>';
         });
+      */
     }
 
-    /**
-     * Check the result of a condition
-     * @param  string $name
-     * @param  array $parameters
-     * @return bool
-     */
     public function check($name, ...$parameters)
     {
         return call_user_func($this->conditions[$name], ...$parameters);
     }
 
     /**
-     * Register a component alis directives
+     * Register a component alias directives
      * @param  string $path
      * @param  string $alias
      * @return void
      *
-     * @todo Remove the 'end' directive in favor of dedent.
+     * @todo Implement this function, as the Standalone Jaguar Compiler has not got this implemented from the 'Decoupled Laravel' Jaguar Compiler.
      */
     public function component($path, $alias = null)
     {
+        /*
+        'Decoubled Laravel' Jaguar version handles components in this way
         $alias = $alias ?: array_last(explode('.', $path));
 
         $this->directive($alias, function ($expression) use ($path) {
@@ -384,6 +377,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
         $this->directive('end'.$alias, function ($expression) {
             return '<?php echo $__env->renderComponent(); ?>';
         });
+         */
     }
 
     /**
@@ -391,9 +385,11 @@ class JaguarCompiler extends Compiler implements CompilerContract
      * @param  string  $path
      * @param  string  $alias
      * @return void
+     * @todo Implement this function, as the Standalone Jaguar Compiler has not got this implemented from the 'Decoupled Laravel' Jaguar Compiler.
      */
     public function include($path, $alias = null)
     {
+        /*
         $alias = $alias ?: array_last(explode('.', $path));
 
         $this->directive($alias, function ($expression) use ($path) {
@@ -401,70 +397,39 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
             return "<?php echo \$__env->make('{$path}', {$expression}, array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>";
         });
+        */
     }
 
-    /**
-     * Register a handler for custom php directives.
-     * @param  string   $name
-     * @param  callable $handler
-     * @return void
-     */
     public function directive($name, callable $handler)
     {
         $this->customDirectives[$name] = $handler;
     }
 
-    /**
-     * Register a handler for custom html directives.
-     * @param  string   $name
-     * @param  callable $handler
-     * @return void
-     */
     public function htmlDirective($name, callable $handler)
     {
         $this->customHtmlDirectives[$name] = $handler;
     }
 
-    /**
-     * Get the list of custom php directives
-     * @return array
-     */
     public function getCustomDirectives()
     {
         return $this->getCustomDirectives;
     }
 
-    /**
-     * Get the list of custom html directives
-     * @return array
-     */
     public function getCustomHtmlDirectives()
     {
         return $this->customHtmlDirectives;
     }
 
-    /**
-     * Sets the echo format to be used by the Jaguar Compiler
-     * @param string $format
-     */
     public function setEchoFormat($format)
     {
         $this->echoFormat = $format;
     }
 
-    /**
-     * Sets the echo fromat to double encode entities.
-     * @return void
-     */
     public function withDoubleEncoding()
     {
         $this->setEchoFormat('e(%s, true)');
     }
 
-    /**
-     * Sets the echo format to not double encode entities.
-     * @return void
-     */
     public function withoutDoubleEncoding()
     {
         $this->setEchoFormat('e(%s, false)');

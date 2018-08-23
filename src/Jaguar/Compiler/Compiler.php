@@ -3,39 +3,74 @@
 namespace Jaguar\Compiler;
 
 use InvalidArgumentException;
-use Jaguar\Foundation\Filesystem\Filesystem;
+use Jaguar\Support\Filesystem\Filesystem;
 
 abstract class Compiler
 {
     /**
-    * The filesystem instance
-    *
-    * @var \Jaguar\Foundation\Filesystem\Filesystem
-    */
+     * The filesystem instance
+     * @var \Jaguar\Support\Filesystem\Filesystem
+     */
     protected $files;
 
     /**
-    * Cache path for the compiled views.
-    *
-    * @var string
-    */
-    protected $cachePath;
+     * The path for the compiled view.
+     * @var string
+     */
+    protected $compilePath;
 
-    public function __construct(Filesystem $files, $cachePath)
+    /**
+     * The path to the Composer autoload file.
+     * @var string
+     */
+    protected $autoload;
+
+    /**
+     * Create a new compiler instance.
+     * @param \Jaguar\Support\Filesystem\Filesystem $files
+     * @param string     $compilePath
+     */
+    public function __construct(Filesystem $files, $compilePath)
     {
-        if (! $cachePath) {
-            throw new InvalidArgumentException("Please provide a valid cache path.");
-        }
-
         $this->files = $files;
-        $this->cachePath = $cachePath;
+        $this->compilePath = $compilePath;
     }
 
+    /**
+     * Sets the Autoload path for the Composer Autoloader.
+     * @param string $path
+     * @return void
+     */
+    public function setAutoload($path)
+    {
+        $this->autoload = $path;
+    }
+
+    /**
+     * Gets the compiled path of a view at $path.
+     * @param  string $path
+     * @return string
+     */
     public function getCompiledPath($path)
     {
-        return $this->cachePath.'/'.sha1($path).'.php';
+        return $this->compilePath.'/'.sha1($path).'.php';
     }
 
+    /**
+     * Sets the base compile path of compiled views.
+     * @param string $path
+     * @return void
+     */
+    public function setCompilePath($path)
+    {
+        $this->compilePath = $path;
+    }
+
+    /**
+     * Gets if the compiled version of the view at path is expired.
+     * @param  string  $path
+     * @return boolean
+     */
     public function isExpired($path)
     {
         $compiled = $this->getCompiledPath($path);
@@ -45,6 +80,6 @@ abstract class Compiler
         }
 
         return $this->files->lastModified($path) >=
-           $this->files->lastModified($compiled);
+                $this->files->lastModified($compiled);
     }
 }

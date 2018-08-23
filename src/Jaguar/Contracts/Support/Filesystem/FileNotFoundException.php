@@ -1,6 +1,6 @@
 <?php
 
-namespace Jaguar\Contracts\Foundation\Filesystem;
+namespace Jaguar\Contracts\Support\Filesystem;
 
 use Exception;
 

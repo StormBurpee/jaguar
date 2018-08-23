@@ -1,12 +1,12 @@
 <?php
 
-namespace Jaguar\Foundation\Filesystem;
+namespace Jaguar\Support\Filesystem;
 
 use ErrorException;
 use FilesystemIterator;
 use Symfony\Component\Finder\Finder;
 use Jaguar\Support\Traits\Macroable;
-use Jaguar\Contracts\Foundation\Filesystem\FileNotFoundException;
+use Jaguar\Contracts\Support\Filesystem\FileNotFoundException;
 
 class Filesystem
 {
@@ -311,7 +311,7 @@ class Filesystem
             foreach ($allDirectories as $directoryName) {
                 $this->deleteDirectory($directoryName);
             }
-            
+
             return true;
         }
 

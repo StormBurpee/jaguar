@@ -13,12 +13,13 @@
     "symfony/finder": "^4.1",
     "ramsey/uuid": "^3.8",
     "mockery/mockery": "^1.1",
-    "nesbot/carbon": "^1.33"
+    "nesbot/carbon": "^1.33",
+    "doctrine/inflector": "^1.3"
   },
   "autoload": {
     "files": [
       "src/Jaguar/Foundation/helpers.php",
-      "src/Jaguar/Foundation/Support/helpers.php"
+      "src/Jaguar/Support/helpers.php"
     ],
     "psr-4": {
       "Jaguar\\": "src/Jaguar/"
