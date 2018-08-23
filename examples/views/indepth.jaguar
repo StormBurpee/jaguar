@@ -26,7 +26,17 @@
       $name = "Jeff"
     %endphp
 
-    %p '{{ "Bye, $name" }}'
+    @p '{{ "Bye, $name" }}'
 
-    %json
-    %notjson
+    %eval($arr = ["first" => "Jeff", "last" => "Bridges"])
+    %json($arr)
+
+    %foreach($arr as $key => $value)
+      @p '{{ "$key: $value" }}'
+    %endforeach
+
+    %for($i = 0; $i < 10; $i++)
+      %continue($i == 3)
+      @p '{{$i}}'
+      %break($i == 5)
+    %endfor

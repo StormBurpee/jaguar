@@ -30,7 +30,17 @@
       $name = "Jeff"
      ?>
 
-    %p  '<?php echo e("Bye, $name"); ?>'
+    @p '<?php echo e("Bye, $name"); ?>'
 
-    %json
-    %notjson
+    <?php ($arr = ["first" => "Jeff", "last" => "Bridges"]); ?>
+    <?php echo json_encode($arr, 15, 512) ?>
+
+    <?php foreach($arr as $key => $value): ?>
+      @p '<?php echo e("$key: $value"); ?>'
+    <?php endforeach; ?>
+
+    <?php for($i = 0; $i < 10; $i++): ?>
+      <?php if($i == 3) continue; ?>
+      @p '<?php echo e($i); ?>'
+      <?php if($i == 5) break; ?>
+    <?php endfor; ?>
