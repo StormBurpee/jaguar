@@ -366,7 +366,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
             $data = explode(',', $match[4]);
             foreach ($data as $tag) {
                 $rdata = explode(':', $tag);
-                if (count($tag) > 0) {
+                if (strlen($tag) > 0) {
                     $tags[] = ltrim($rdata[0])."=".ltrim($rdata[1]);
                 }
             }

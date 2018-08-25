@@ -65,6 +65,10 @@ class Jaguar
         Extensions::registerCompilerHtmlDirective('doc5', function ($expression) {
             return "<!DOCTYPE html>";
         });
+
+        Extensions::registerCompilerHtmlDirective('meta', function($expression, $properties) {
+          return "<meta $properties/>";
+        });
     }
 
     /**
