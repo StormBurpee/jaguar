@@ -6,10 +6,10 @@
 <html>
   <head>
     <title>Custom Directives</title>
-</head>
+	</head>
   <body>
     <h1>
       Jaguar v0.1.0
-</h1>
-</body>
+		</h1>
+	</body>
 </html>

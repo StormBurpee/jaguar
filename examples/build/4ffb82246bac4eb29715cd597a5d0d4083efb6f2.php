@@ -13,15 +13,15 @@
       font-size: 26px;
       color: #ff0000;
       }
-</style>
-</head>
+		</style>
+	</head>
   <body>
     <h1 class="title">Indepth Example</h1>
     <?php ($name = "World"); ?>
     <?php echo e("Hello, $name!"); ?>
     <?php if(1 == 1): ?>
       <h2>1 == 1</h2>
-</body>
+	</body>
     <?php endif; ?> 
     <?php if (! (1 == 2)): ?>
       <h2>1 != 1</h2>

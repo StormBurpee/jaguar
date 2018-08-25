@@ -364,7 +364,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
     {
         $block = array(
           "block" => $variable,
-          "html" => $html
+          "html" => $html,
+          "tabs" => $this->currentIndent
         );
 
         $this->tabBlocks[] = $block;
@@ -376,8 +377,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
         if ($lastTabBlock['html'] == true) {
             $whitespace =  "";
-            for($i = 0; $i <= (($this->currentIndent-1) * 2); $i++) {
-              $whiteSpace .= " ";
+            for($i = 0; $i < $lastTabBlock["tabs"]; $i++) {
+              $whitespace .= "\t";
             }
             return "$whitespace</".$lastTabBlock['block'].">\n";
         } else {
