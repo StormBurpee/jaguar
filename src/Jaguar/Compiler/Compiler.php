@@ -46,8 +46,9 @@ abstract class Compiler
         $this->autoload = $path;
     }
 
-    public function setFilesystem(Filesystem $files) {
-      $this->files = $files;
+    public function setFilesystem(Filesystem $files)
+    {
+        $this->files = $files;
     }
 
     /**

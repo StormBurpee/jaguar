@@ -198,7 +198,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
                     $lineStart = $trimmedLine[0];
 
                     if ($tabcount > $this->currentIndent) {
-                        $indentAmm = count($tabBlocks);
+                        $indentAmm = count($this->tabBlocks);
                         $needsIndentChange = true;
                     }
                 }
@@ -212,7 +212,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
             }
 
             if ($needsIndentChange) {
-                if (count($tabBlocks) == $indentAmm) {
+                if (count($this->tabBlocks) == $indentAmm) {
                     $this->createTabBlock("", "compiler");
                 }
             }
@@ -350,7 +350,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
     protected function compileHtmlStatement($match)
     {
         $tags = [];
-        if ($match[3][0] == "[") {
+        if ($match[3] && $match[3][0] == "[") {
             $data = explode(',', $match[4]);
             foreach ($data as $tag) {
                 $rdata = explode(':', $tag);
