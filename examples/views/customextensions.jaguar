@@ -5,3 +5,13 @@
     @title Custom Directives
   @body
     @h1 %jaguar
+
+    @tbl[class: "table"]
+      @thead
+        @tr
+          @th Head 1
+          @th Head 2
+      @tbody
+        @tr
+          @td Body 1
+          @td Body 2

@@ -233,6 +233,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
           }
         }
 
+        $result = $this->stripEmptyLines($result);
+
         return $result;
     }
 
@@ -372,12 +374,16 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
         $safeTag = implode(" ", $tags);
 
-        if ($this->getIndentsBeforeLine($this->peekNextLine()) > $this->currentIndent) {
-            $this->createTabBlock($match[1]);
-            return count($tags) > 0 ? "<$match[1] $safeTag>" : "<$match[1]>";
-        }
+        if(isset($this->customHtmlDirectives[$match[1]])) {
+          return $this->callCustomHtmlDirective($match[1], $match, $safeTag);
+        } else {
+          if ($this->getIndentsBeforeLine($this->peekNextLine()) > $this->currentIndent) {
+              $this->createTabBlock($match[1]);
+              return count($tags) > 0 ? "<$match[1] $safeTag>" : "<$match[1]>";
+          }
 
-        return count($tags) > 0 ? "<$match[1] $safeTag>$match[6]</$match[1]>" : "<$match[1]>$match[6]</$match[1]>";
+          return count($tags) > 0 ? "<$match[1] $safeTag>$match[6]</$match[1]>" : "<$match[1]>$match[6]</$match[1]>";
+        }
     }
 
     protected function createTabBlock($variable, $type = "html")
@@ -428,9 +434,23 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return call_user_func($this->customDirectives[$name], trim($value));
     }
 
-    protected function callCustomHtmlDirective($name, $value)
+    protected function callCustomHtmlDirective($name, $value, $properties)
     {
-        // TODO: this
+        $directive = $this->customHtmlDirectives[$name];
+
+        if($directive["block"] == true) {
+          $result = call_user_func($directive["handler"], $value, $properties);
+          $resultReturn = $this->getTagName($result);
+          $this->createTabBlock($resultReturn, "html");
+          return $result;
+        } else {
+          return call_user_func($directive["handler"], $value, $properties);
+        }
+    }
+
+    protected function getTagName($tag)
+    {
+      return explode(">", explode(" ", explode("<", $tag)[1])[0])[0];
     }
 
     public function stripParentheses($expression)
@@ -551,9 +571,9 @@ class JaguarCompiler extends Compiler implements CompilerContract
         $this->customDirectives[$name] = $handler;
     }
 
-    public function htmlDirective($name, callable $handler)
+    public function htmlDirective($name, callable $handler, $block = false)
     {
-        $this->customHtmlDirectives[$name] = $handler;
+        $this->customHtmlDirectives[$name] = ["handler" => $handler, "block" => $block];
     }
 
     public function getCustomDirectives()

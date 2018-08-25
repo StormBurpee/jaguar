@@ -12,4 +12,8 @@ Extensions::registerCompilerDirective("jaguar", function ($expression) {
     return "Jaguar " . Jaguar::getVersionString();
 });
 
+Extensions::registerCompilerHtmlDirective("tbl", function($expression, $properties) {
+  return strlen($properties) > 0 ? "<table $properties>" : "<table>";
+}, true);
+
 $jaguar->compileDirectory(__DIR__.'/views');

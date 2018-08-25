@@ -4,6 +4,7 @@ namespace Jaguar;
 
 use InvalidArgumentException;
 use Jaguar\Compiler\JaguarCompiler;
+use Jaguar\Extensions\Extensions;
 use Jaguar\Support\Filesystem\Filesystem;
 
 class Jaguar
@@ -51,11 +52,19 @@ class Jaguar
         if (! static::$instance) {
             static::$instance = $this;
             static::$compiler = new JaguarCompiler($this->filesystem, $this->compiledOutput);
+            $this->registerCoreCompilerExtensions();
         } else {
             $this->setCompiledPath($this->compiledOutput);
         }
 
         static::$compiler->setAutoload($this->autoload);
+    }
+
+    protected function registerCoreCompilerExtensions()
+    {
+        Extensions::registerCompilerHtmlDirective('doc5', function ($expression) {
+            return "<!DOCTYPE html>";
+        });
     }
 
     /**
