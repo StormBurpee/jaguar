@@ -1,42 +1,36 @@
 @html
   @head
-    @title 'Indepth Example'
-    @meta{name: 'description', content: 'content here'}
+    @title Indepth Example.
+    @meta[name: 'description', content: 'content here']
     {-- Comment Example --}
     {-- Inline Style Example --}
+    {-- This is broken until you fully fix the dedent situation. --}
     @style
-      .title
-        font-size: 26px
-        color: #ff0000
-
+      .title {
+      font-size: 26px;
+      color: #ff0000;
+      }
   @body
-    @h1.title 'Indepth Example'
+    @h1[class: "title"] Indepth Example
     %eval($name = "World")
     {{ "Hello, $name!" }}
-
     %if(1 == 1)
-      @h2 '1 == 1'
+      @h2 1 == 1
     %endif {-- Really want to get rid of this --}
-
     %unless(1 == 2)
-      @h2 '1 != 1'
+      @h2 1 != 1
     %endunless
-
     %php
       $name = "Jeff"
     %endphp
-
-    @p '{{ "Bye, $name" }}'
-
+    @p {{ "Bye, $name" }}
     %eval($arr = ["first" => "Jeff", "last" => "Bridges"])
     %json($arr)
-
     %foreach($arr as $key => $value)
-      @p '{{ "$key: $value" }}'
+      @p {{ "$key: $value" }}
     %endforeach
-
     %for($i = 0; $i < 10; $i++)
       %continue($i == 3)
-      @p '{{$i}}'
+      @p {{$i}}
       %break($i == 5)
     %endfor

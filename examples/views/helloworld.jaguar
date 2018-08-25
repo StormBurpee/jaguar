@@ -1,5 +1,5 @@
 @html
   @head
-    @title 'Hello, World!'
+    @title Hello, World!
   @body
     @h1 {{ 'Hello, World!' }}

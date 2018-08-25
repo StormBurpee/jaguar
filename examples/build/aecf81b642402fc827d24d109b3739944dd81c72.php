@@ -3,8 +3,13 @@
 
 
 
-@html
-  @head
-    @title 'Custom Directives'
-  @body
-    @h1 Jaguar v0.1.0
+<html>
+  <head>
+    <title>Custom Directives</title>
+</head>
+  <body>
+    <h1>
+      Jaguar v0.1.0
+</h1>
+</body>
+</html>

@@ -119,6 +119,24 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     protected $tabBlocks = [];
 
+    /**
+     * Current indent in code.
+     * @var int
+     */
+    protected $currentIndent = -1;
+
+    /**
+     * Current line that's being processed
+     * @var int
+     */
+    protected $currentLine = 0;
+
+    /**
+     * Lines of code being compiled
+     * @var array
+     */
+    protected $lines =  [];
+
     public function compile($path = null)
     {
         if ($path) {
@@ -158,33 +176,38 @@ class JaguarCompiler extends Compiler implements CompilerContract
         $result = '';
         $result = $this->addHeaders($result);
 
-        $lines = explode("\n", $value);
+        $this->lines = explode("\n", $value);
         //$lines = preg_split("/[\n]+/", $value, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        $blockTabCount = -1;
+        $this->currentIndent = -1;
+        $this->currentLine = 0;
 
-        foreach ($lines as $line) {
-            $tabcount = (strlen($line) - strlen(ltrim($line)))/2;
+        foreach ($this->lines as $line) {
+            $tabcount = $this->getIndentsBeforeLine($line);
 
-            if ($blockTabCount != $tabcount) {
-                if ($tabcount < $blockTabCount) {
-                    $this->closeLastTabBlock();
+            if ($this->currentIndent != $tabcount) {
+                if ($tabcount < $this->currentIndent) {
+                    while($tabcount < $this->currentIndent) {
+                      $result .= $this->closeLastTabBlock($result);
+                      $this->currentIndent--;
+                    }
                 } else {
                     $trimmedLine = ltrim($line);
                     $lineStart = $trimmedLine[0];
 
                     if ($lineStart == '@') {
-
                     }
                 }
 
-                $blockTabCount = $tabcount;
+                $this->currentIndent = $tabcount;
             }
 
             foreach (token_get_all($line) as $token) {
                 $result .= is_array($token) ? $this->parseToken($token) : $token;
                 $result .= "\n";
             }
+
+            $this->currentLine++;
         }
 
         if (! empty($this->rawBlocks)) {
@@ -257,10 +280,6 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return $content;
     }
 
-    protected function closeLastTabBlock()
-    {
-    }
-
     protected function compileExtensions($value)
     {
         foreach ($this->extensions as $compiler) {
@@ -289,7 +308,13 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
     protected function compileHtmlStatements($value)
     {
-        
+        return preg_replace_callback(
+          '/\B@(\w+(?:::\w+)?)([ \t]*)(\[ ( (?>[^\[\]]+) | (?3) )* \])?([ \t]*)(.*)?/x',
+            function ($match) {
+                return $this->compileHtmlStatement($match);
+            },
+            $value
+          );
         return $value;
     }
 
@@ -306,10 +331,71 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return isset($match[3]) ? $match[0] : $match[0].$match[2];
     }
 
+    /**
+     * Compiles a HTML Statement
+     *
+     * @param  array $match Consists of 6 groups. Group 1 is the variable name, Group 4 is the {data}, group 6 is the value.
+     * @return [type]        [description]
+     */
     protected function compileHtmlStatement($match)
     {
-        // TODO: this
-        return $match;
+        $tags = [];
+        if ($match[3][0] == "[") {
+            $data = explode(',', $match[4]);
+            foreach ($data as $tag) {
+                $rdata = explode(':', $tag);
+                if (count($tag) > 0) {
+                    $tags[] = ltrim($rdata[0])."=".ltrim($rdata[1]);
+                }
+            }
+        }
+
+        $safeTag = implode(" ", $tags);
+
+        if ($this->getIndentsBeforeLine($this->peekNextLine()) > $this->currentIndent) {
+            $this->createTabBlock($match[1]);
+            return count($tags) > 0 ? "<$match[1] $safeTag>" : "<$match[1]>";
+        }
+
+        return count($tags) > 0 ? "<$match[1] $safeTag>$match[6]</$match[1]>" : "<$match[1]>$match[6]</$match[1]>";
+    }
+
+    protected function createTabBlock($variable, $html = true)
+    {
+        $block = array(
+          "block" => $variable,
+          "html" => $html
+        );
+
+        $this->tabBlocks[] = $block;
+    }
+
+    protected function closeLastTabBlock($result)
+    {
+        $lastTabBlock = array_pop($this->tabBlocks);
+
+        if ($lastTabBlock['html'] == true) {
+            $whitespace =  "";
+            for($i = 0; $i <= (($this->currentIndent-1) * 2); $i++) {
+              $whiteSpace .= " ";
+            }
+            return "$whitespace</".$lastTabBlock['block'].">\n";
+        } else {
+          return "";
+        }
+    }
+
+    protected function peekNextLine()
+    {
+      if(count($this->lines) > $this->currentLine + 1) {
+        return $this->lines[$this->currentLine + 1];
+      }
+      return "";
+    }
+
+    protected function getIndentsBeforeLine($line)
+    {
+      return (strlen($line) - strlen(ltrim($line)))/2;
     }
 
     protected function callCustomDirective($name, $value)

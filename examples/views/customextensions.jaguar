@@ -2,6 +2,7 @@
 {-- The custom extensions here are registered in the 'compile.php' file in the parent directory. --}
 @html
   @head
-    @title 'Custom Directives'
+    @title Custom Directives
   @body
-    @h1 %jaguar
+    @h1
+      %jaguar
