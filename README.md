@@ -163,7 +163,43 @@ Which would compile too,
 TODO
 
 ### Html Extensions
-TODO
+When extending the HTML Compiler of Jaguar, you will mostly be accessing the 'Compiler Html Directive' section.   
+When extending HTML, Jaguar needs to know if the extension can be compiled as a block or not. This meaning if it can have children, i.e.   
+```
+<!DOCTYPE html> <!-- doesn't have children. Therefore not a block.
+<div> <!-- can have children, Therefore is a block. -->
+```
+The `Extensions::registerCompilerHtmlDirective` takes three parameters, the third being optional and defaults to false.   
+| parameters | Description     |
+| :------------- | :------------- |
+| Parameter 1 - $name    | The name of the custom directive, i.e 'tbl', gets picked up when parsing '@tbl' |
+| Parameter 2 - $handler | The function that gets called when the compiler detects the '@$name' |
+| Parameter 3 - $isBlock | Defines whether the custom directive can be compiled as a block or not. |  
+
+The '$handler' that gets called takes two parameters, the $expression and the $properties.  
+The $expression is an array of useful information relating to the tag that has been processed.   
+| $expression index     | Description     |
+| :------------- | :------------- |
+| `$expression[0]`       | Full match, i.e '@div[class: "divclass"] value'       |
+| `$expression[1]`       | The tag name, i.e 'div' |
+| `$expression[2]`       | Required for compiler internal use. |
+| `$expression[3]`       | The properties, i.e. '[class: "divclass"]' |
+| `$expression[4]`       | The properties, without the '[]', i.e 'class: "divclass"' |
+| `$expression[5]`       | Whitespace before value, internal use. |
+| `$expression[6]`       | The value, i.e 'value' |   
+
+Internally, the Jaguar Compiler already implements a few extensions, for example this is found in the `Jaguar.php` file.   
+```php
+  Extensions::registerCompilerHtmlDirective('doc5', function($expression, $properties) {
+    return "<!DOCTYPE html>"
+  });
+```   
+Furthermore, more examples are provided in the 'examples/compiler.php' file. However, the below shows creating a html directive for <table> i.e an example of creating a block.
+```php
+  Extensions::registerCompilerHtmlDirective('tbl', function($expression, $properties) {
+    return strlen($properties) > 0 ? "<table $properties>" : "<table>";
+  }, true);
+```
 
 ## Etc   
 
