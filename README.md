@@ -178,15 +178,15 @@ The `Extensions::registerCompilerHtmlDirective` takes three parameters, the thir
 
 The '$handler' that gets called takes two parameters, the $expression and the $properties.  
 The $expression is an array of useful information relating to the tag that has been processed.   
-| $expression index     | Description     |
-| :------------- | :------------- |
-| `$expression[0]`       | Full match, i.e '@div[class: "divclass"] value'       |
-| `$expression[1]`       | The tag name, i.e 'div' |
-| `$expression[2]`       | Required for compiler internal use. |
-| `$expression[3]`       | The properties, i.e. '[class: "divclass"]' |
-| `$expression[4]`       | The properties, without the '[]', i.e 'class: "divclass"' |
-| `$expression[5]`       | Whitespace before value, internal use. |
-| `$expression[6]`       | The value, i.e 'value' |   
+| $expression index | Description    |
+| :-------------    | :------------- |
+| `$expression[0]`  | Full match, i.e '@div[class: "divclass"] value'       |
+| `$expression[1]`  | The tag name, i.e 'div' |
+| `$expression[2]`  | Required for compiler internal use. |
+| `$expression[3]`  | The properties, i.e. '[class: "divclass"]' |
+| `$expression[4]`  | The properties, without the '[]', i.e 'class: "divclass"' |
+| `$expression[5]`  | Whitespace before value, internal use. |
+| `$expression[6]`  | The value, i.e 'value' |   
 
 Internally, the Jaguar Compiler already implements a few extensions, for example this is found in the `Jaguar.php` file.   
 ```php
