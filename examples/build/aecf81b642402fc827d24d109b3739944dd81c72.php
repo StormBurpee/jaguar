@@ -4,6 +4,7 @@
 
 
 <html>
+</html>
   <head>
     <title>Custom Directives</title>
 	</head>
@@ -12,4 +13,3 @@
       Jaguar v0.1.0
 		</h1>
 	</body>
-</html>

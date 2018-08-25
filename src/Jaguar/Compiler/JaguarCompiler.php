@@ -184,18 +184,22 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
         foreach ($this->lines as $line) {
             $tabcount = $this->getIndentsBeforeLine($line);
+            $needsIndentChange = false;
+            $indentAmm = 0;
 
             if ($this->currentIndent != $tabcount) {
-                if ($tabcount < $this->currentIndent) {
-                    while($tabcount < $this->currentIndent) {
-                      $result .= $this->closeLastTabBlock($result);
-                      $this->currentIndent--;
+                if ($tabcount < count($this->tabBlocks)) {
+                    while ($tabcount < count($this->tabBlocks)) {
+                        $result .= $this->closeLastTabBlock($result);
+                        $this->currentIndent--;
                     }
                 } else {
                     $trimmedLine = ltrim($line);
                     $lineStart = $trimmedLine[0];
 
-                    if ($lineStart == '@') {
+                    if ($tabcount > $this->currentIndent) {
+                        $indentAmm = count($tabBlocks);
+                        $needsIndentChange = true;
                     }
                 }
 
@@ -205,6 +209,12 @@ class JaguarCompiler extends Compiler implements CompilerContract
             foreach (token_get_all($line) as $token) {
                 $result .= is_array($token) ? $this->parseToken($token) : $token;
                 $result .= "\n";
+            }
+
+            if ($needsIndentChange) {
+                if (count($tabBlocks) == $indentAmm) {
+                    $this->createTabBlock("", "compiler");
+                }
             }
 
             $this->currentLine++;
@@ -360,11 +370,11 @@ class JaguarCompiler extends Compiler implements CompilerContract
         return count($tags) > 0 ? "<$match[1] $safeTag>$match[6]</$match[1]>" : "<$match[1]>$match[6]</$match[1]>";
     }
 
-    protected function createTabBlock($variable, $html = true)
+    protected function createTabBlock($variable, $type = "html")
     {
         $block = array(
           "block" => $variable,
-          "html" => $html,
+          "type" => $type,
           "tabs" => $this->currentIndent
         );
 
@@ -375,28 +385,28 @@ class JaguarCompiler extends Compiler implements CompilerContract
     {
         $lastTabBlock = array_pop($this->tabBlocks);
 
-        if ($lastTabBlock['html'] == true) {
+        if ($lastTabBlock['type'] == "html") {
             $whitespace =  "";
-            for($i = 0; $i < $lastTabBlock["tabs"]; $i++) {
-              $whitespace .= "\t";
+            for ($i = 0; $i < $lastTabBlock["tabs"]; $i++) {
+                $whitespace .= "\t";
             }
             return "$whitespace</".$lastTabBlock['block'].">\n";
         } else {
-          return "";
+            return "";
         }
     }
 
     protected function peekNextLine()
     {
-      if(count($this->lines) > $this->currentLine + 1) {
-        return $this->lines[$this->currentLine + 1];
-      }
-      return "";
+        if (count($this->lines) > $this->currentLine + 1) {
+            return $this->lines[$this->currentLine + 1];
+        }
+        return "";
     }
 
     protected function getIndentsBeforeLine($line)
     {
-      return (strlen($line) - strlen(ltrim($line)))/2;
+        return (strlen($line) - strlen(ltrim($line)))/2;
     }
 
     protected function callCustomDirective($name, $value)

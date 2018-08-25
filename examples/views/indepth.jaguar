@@ -7,8 +7,8 @@
     {-- This is broken until you fully fix the dedent situation. --}
     @style
       .title {
-      font-size: 26px;
-      color: #ff0000;
+        font-size: 26px;
+        color: #ff0000;
       }
   @body
     @h1[class: "title"] Indepth Example

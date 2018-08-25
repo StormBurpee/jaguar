@@ -9,11 +9,11 @@
     
     
     <style>
-      .title {
-      font-size: 26px;
-      color: #ff0000;
-      }
 		</style>
+      .title {
+        font-size: 26px;
+        color: #ff0000;
+      }
 	</head>
   <body>
     <h1 class="title">Indepth Example</h1>
@@ -21,11 +21,9 @@
     <?php echo e("Hello, $name!"); ?>
     <?php if(1 == 1): ?>
       <h2>1 == 1</h2>
-	</body>
     <?php endif; ?> 
     <?php if (! (1 == 2)): ?>
       <h2>1 != 1</h2>
-</html>
     <?php endif; ?>
     <?php 
       $name = "Jeff"
@@ -41,3 +39,5 @@
       <p><?php echo e($i); ?></p>
       <?php if($i == 5) break; ?>
     <?php endfor; ?>
+	</body>
+</html>
