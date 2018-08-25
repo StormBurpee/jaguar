@@ -174,7 +174,7 @@ The `Extensions::registerCompilerHtmlDirective` takes three parameters, the thir
 | :------------- | :------------- |
 | Parameter 1 - $name    | The name of the custom directive, i.e 'tbl', gets picked up when parsing '@tbl' |
 | Parameter 2 - $handler | The function that gets called when the compiler detects the '@$name' |
-| Parameter 3 - $isBlock | Defines whether the custom directive can be compiled as a block or not. |  
+| Parameter 3 - $isBlock | Defines whether the custom directive can be compiled as a block or not. |
 
 The '$handler' that gets called takes two parameters, the $expression and the $properties.  
 The $expression is an array of useful information relating to the tag that has been processed.   
@@ -186,7 +186,7 @@ The $expression is an array of useful information relating to the tag that has b
 | `$expression[3]`  | The properties, i.e. '[class: "divclass"]' |
 | `$expression[4]`  | The properties, without the '[]', i.e 'class: "divclass"' |
 | `$expression[5]`  | Whitespace before value, internal use. |
-| `$expression[6]`  | The value, i.e 'value' |   
+| `$expression[6]`  | The value, i.e 'value' |
 
 Internally, the Jaguar Compiler already implements a few extensions, for example this is found in the `Jaguar.php` file.   
 ```php
