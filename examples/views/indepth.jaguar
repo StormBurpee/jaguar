@@ -12,7 +12,7 @@
       }
   @body
     @h1[class: "title"] Indepth Example
-    %eval($name = "World")
+    %e($name = "World")
     {{ "Hello, $name!" }}
     %if(1 == 1)
       @h2 1 == 1

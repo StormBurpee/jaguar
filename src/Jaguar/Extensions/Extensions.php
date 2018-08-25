@@ -22,10 +22,20 @@ class Extensions
      * @param  string   $name
      * @param  callable $handler
      * @param  boolean  $block
-     * @return void            
+     * @return void
      */
     public static function registerCompilerHtmlDirective($name, callable $handler, $block = false)
     {
-      Jaguar::getInstance()->getCompiler()->htmlDirective($name, $handler, $block);
+        Jaguar::getInstance()->getCompiler()->htmlDirective($name, $handler, $block);
+    }
+
+    public static function registerCompilerAlias($alias, $original)
+    {
+        Jaguar::getInstance()->getCompiler()->alias($alias, $original);
+    }
+
+    public static function registerCompilerHtmlAlias($alias, $original)
+    {
+        Jaguar::getInstance()->getCompiler()->htmlAlias($alias, $original);
     }
 }

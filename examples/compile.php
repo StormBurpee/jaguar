@@ -16,4 +16,6 @@ Extensions::registerCompilerHtmlDirective("tbl", function($expression, $properti
   return strlen($properties) > 0 ? "<table $properties>" : "<table>";
 }, true);
 
+Extensions::registerCompilerHtmlAlias('tb', 'tbl');
+
 $jaguar->compileDirectory(__DIR__.'/views');

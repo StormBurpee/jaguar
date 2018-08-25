@@ -69,6 +69,8 @@ class Jaguar
         Extensions::registerCompilerHtmlDirective('meta', function($expression, $properties) {
           return "<meta $properties/>";
         });
+
+        Extensions::registerCompilerAlias('e', 'eval');
     }
 
     /**
@@ -155,6 +157,10 @@ class Jaguar
         return 'v' . static::VERSION;
     }
 
+    /**
+     * Gets the Jaguar Instance
+     * @return \Jaguar\Jaguar
+     */
     public static function getInstance()
     {
         if (! static::$instance) {

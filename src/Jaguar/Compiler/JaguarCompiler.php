@@ -41,6 +41,18 @@ class JaguarCompiler extends Compiler implements CompilerContract
     protected $customHtmlDirectives = [];
 
     /**
+     * All registered custom Jaguar PHP Aliases.
+     * @var array
+     */
+    protected $customAliases = [];
+
+    /**
+     * All registered custom Jaguar HTML Aliases.
+     * @var array
+     */
+    protected $customHtmlAliases = [];
+
+    /**
      * All registered custom Jaguar PHP condition handlers.
      * @var array
      */
@@ -169,6 +181,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
             $this->header[] = "<?php require_once '" . $this->autoload ."'; ?>";
         }
 
+        $value = $this->convertAliases($value);
+
         if (strpos($value, '%php') !== false) {
             $value = $this->storePhpBlocks($value);
         }
@@ -241,6 +255,33 @@ class JaguarCompiler extends Compiler implements CompilerContract
     protected function stripEmptyLines($value)
     {
       return preg_replace('/\n\s*\n/', "\n", $value);
+    }
+
+    protected function convertAliases($value)
+    {
+      foreach($this->customAliases as $key => $alias)
+      {
+        $value = preg_replace_callback("/(?<!%)%$key(.+?)/s", function($matches) use($alias) {
+          if(isset($matches) && ($matches[1] == "(" || $matches[1] == ' ' || $matches[1] == PHP_EOL)) {
+            return "%".$alias.$matches[1];
+          } else {
+            return $matches[0];
+          }
+        }, $value);
+      }
+
+      foreach($this->customHtmlAliases as $key => $alias)
+      {
+        $value = preg_replace_callback("/(?<!@)@$key(.+?)/s", function($matches) use($alias) {
+          if($matches[1] == "[" || $matches[1] == ' ' || $matches[1] == PHP_EOL) {
+            return "@".$alias.$matches[1];
+          } else {
+            return $matches[0];
+          }
+        }, $value);
+      }
+
+      return $value;
     }
 
     /**
@@ -574,6 +615,16 @@ class JaguarCompiler extends Compiler implements CompilerContract
     public function htmlDirective($name, callable $handler, $block = false)
     {
         $this->customHtmlDirectives[$name] = ["handler" => $handler, "block" => $block];
+    }
+
+    public function alias($alias, $original)
+    {
+      $this->customAliases[$alias] = $original;
+    }
+
+    public function htmlAlias($alias, $original)
+    {
+      $this->customHtmlAliases[$alias] = $original;
     }
 
     public function getCustomDirectives()
