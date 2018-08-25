@@ -176,6 +176,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
         $result = '';
         $result = $this->addHeaders($result);
 
+        $value = $this->stripEmptyLines($value);
+
         $this->lines = explode("\n", $value);
         //$lines = preg_split("/[\n]+/", $value, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -194,12 +196,9 @@ class JaguarCompiler extends Compiler implements CompilerContract
                         $this->currentIndent--;
                     }
                 } else {
-                    $trimmedLine = ltrim($line);
-                    $lineStart = $trimmedLine[0];
-
-                    if ($tabcount > $this->currentIndent) {
-                        $indentAmm = count($this->tabBlocks);
-                        $needsIndentChange = true;
+                    if($tabcount > count($this->tabBlocks)) {
+                      $needsIndentChange = true;
+                      $indentAmm = count($this->tabBlocks);
                     }
                 }
 
@@ -228,7 +227,18 @@ class JaguarCompiler extends Compiler implements CompilerContract
             $result = $this->addFooters($result);
         }
 
+        if(count($this->tabBlocks) > 0) {
+          while(count($this->tabBlocks) > 0) {
+            $this->closeLastTabBlock($result);
+          }
+        }
+
         return $result;
+    }
+
+    protected function stripEmptyLines($value)
+    {
+      return preg_replace('/\n\s*\n/', "\n", $value);
     }
 
     /**

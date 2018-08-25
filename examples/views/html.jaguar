@@ -5,19 +5,23 @@
     @h1 This is a title tag
     @h2 A smaller title
     @h3 An even smaller title.
+
     @h6 Coming up is a Html list!
     @ul
       @li List item 1
       @li List item 2
       @li List item 3
+
     @h6 And a ordered list!
     @ol
       @li List item 1
       @li List item 2
       @li List item 3
+
     @p
       This here is a block of text.
       Formatted in a p element.
+      
     @div
       This is a div
       @div

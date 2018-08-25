@@ -4,5 +4,4 @@
   @head
     @title Custom Directives
   @body
-    @h1
-      %jaguar
+    @h1 %jaguar
