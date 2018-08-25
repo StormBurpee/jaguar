@@ -113,6 +113,12 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     protected $rawBlocks = [];
 
+    /**
+     * Array to temporarily store blocks that are indented
+     * @var array
+     */
+    protected $tabBlocks = [];
+
     public function compile($path = null)
     {
         if ($path) {
@@ -141,8 +147,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
         $this->footer = [];
         $this->header = [];
         $this->header[] = "<!-- Compiled by the Jaguar Compiler " . Jaguar::getVersionString() . ". -->";
-        if($this->autoload) {
-          $this->header[] = "<?php require_once '" . $this->autoload ."'; ?>";
+        if ($this->autoload) {
+            $this->header[] = "<?php require_once '" . $this->autoload ."'; ?>";
         }
 
         if (strpos($value, '%php') !== false) {
@@ -152,8 +158,33 @@ class JaguarCompiler extends Compiler implements CompilerContract
         $result = '';
         $result = $this->addHeaders($result);
 
-        foreach (token_get_all($value) as $token) {
-            $result .= is_array($token) ? $this->parseToken($token) : $token;
+        $lines = explode("\n", $value);
+        //$lines = preg_split("/[\n]+/", $value, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+        $blockTabCount = -1;
+
+        foreach ($lines as $line) {
+            $tabcount = (strlen($line) - strlen(ltrim($line)))/2;
+
+            if ($blockTabCount != $tabcount) {
+                if ($tabcount < $blockTabCount) {
+                    $this->closeLastTabBlock();
+                } else {
+                    $trimmedLine = ltrim($line);
+                    $lineStart = $trimmedLine[0];
+
+                    if ($lineStart == '@') {
+
+                    }
+                }
+
+                $blockTabCount = $tabcount;
+            }
+
+            foreach (token_get_all($line) as $token) {
+                $result .= is_array($token) ? $this->parseToken($token) : $token;
+                $result .= "\n";
+            }
         }
 
         if (! empty($this->rawBlocks)) {
@@ -205,7 +236,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
     protected function addHeaders($result)
     {
-      return implode(PHP_EOL, $this->header) . PHP_EOL . PHP_EOL . ltrim($result, PHP_EOL);
+        return implode(PHP_EOL, $this->header) . PHP_EOL . PHP_EOL . ltrim($result, PHP_EOL);
     }
 
     protected function addFooters($result)
@@ -224,6 +255,10 @@ class JaguarCompiler extends Compiler implements CompilerContract
         }
 
         return $content;
+    }
+
+    protected function closeLastTabBlock()
+    {
     }
 
     protected function compileExtensions($value)
@@ -254,7 +289,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
     protected function compileHtmlStatements($value)
     {
-        // TODO: this
+        
         return $value;
     }
 
