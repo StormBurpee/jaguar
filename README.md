@@ -110,6 +110,20 @@ Another important thing to note, is that PHP Template functions **do not** need 
 | `%for [var], [start], [end] [block]` | Alias of PHP for loop. All for loops are inclusive of the end. (i.e. <=, >=) | `%for $i, 0, 10 echo($i)`|
 
 ## Common Core HTML Template Functions   
+### @scss   
+Jaguar comes with a scss compiler built in, using the `@scss` template function you can implement inline scss styles. This should fully suppor the scss language spec.   
+```jaguar
+@scss
+  $color: #abc;
+  div {color: $lighten($color, 20%); }
+  .title {color: $color;}
+```
+Will outout
+```html
+<style>
+  div{color:#eaeef2}.title{color:#abc}
+</style>
+```
 
 
 ## Passing Objects to HTML Template Functions
