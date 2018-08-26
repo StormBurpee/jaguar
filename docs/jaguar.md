@@ -73,3 +73,21 @@ use Jaguar\Jaguar;
 $jaguar = new Jaguar();
 $jaguar->getCompiler(); // Returns `Jaguar\Compiler\JaguarCompiler` class.
 ```
+
+## Get the Jaguar Version
+For when you need the version of the Jaguar Compiler, Jaguar provides two `static` methods of accessing the version. `Jaguar::getVersion()` and `Jaguar::getVersonString()`. The first provides the version, and the latter provides the version in its string counterpart.
+```php
+use Jaguar\Jaguar;
+
+echo Jaguar::getVersion(); // Outputs 0.1.0
+echo Jaguar::getVersionString(); // Outputs v0.1.0
+```
+
+## [Advanced] Get the Jaguar Instance
+**Advanced use only**   
+Usually, this function is not used. Internally, it is used for when Extensions to the compiler are registered before an instance of `Jaguar` is made. When this happens, it creates an instance and registers a compiler, for it to be able to register extensions. However, possible use cases could be creating an instance of `Jaguar` in one class, and then accessing it this way in a seperate class.
+```php
+use Jaguar\Jaguar;
+
+$jaguar = Jaguar::getInstance();
+```
