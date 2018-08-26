@@ -18,8 +18,8 @@ Extensions::registerCompilerHtmlDirective("tbl", function($expression, $properti
 
 Extensions::registerCompilerHtmlAlias('tb', 'tbl');
 
-$env = 'local';
-Extensions::registerIf('env', function($environment) use ($env) {
+Extensions::registerIf('env', function($environment) {
+  $env = 'local';
   return $env == $environment;
 });
 

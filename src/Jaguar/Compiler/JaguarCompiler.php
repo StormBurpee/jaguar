@@ -6,6 +6,7 @@ use Jaguar\Jaguar;
 use Jaguar\Support\Arr;
 use Jaguar\Support\Str;
 use Jaguar\Contracts\Compiler\Compiler as CompilerContract;
+//use SuperClosure\Serializer;
 
 class JaguarCompiler extends Compiler implements CompilerContract
 {
@@ -193,6 +194,13 @@ class JaguarCompiler extends Compiler implements CompilerContract
         if ($this->autoload) {
             $this->header[] = "<?php require_once '" . $this->autoload ."'; ?>";
         }
+
+        /*$serializer = new Serializer();
+        foreach($this->conditions as $condition => $handler)
+        {
+          $function = $serializer->getData($handler, true)['code'];
+          $this->header[] = "<?php \Jaguar\Extensions\Extensions::registerIf('$condition', $function); ?>";
+        }*/
 
         $value = $this->convertAliases($value);
 
