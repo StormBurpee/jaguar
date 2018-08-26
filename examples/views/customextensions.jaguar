@@ -20,11 +20,3 @@
         @tr
           @th Head 1
           @th Head 2
-
-    %env('production')
-      @h4 Environment is production.
-    %elseenv('local')
-      @h4 Environment is local.
-    %else
-      @h4 Unsure what environment is.
-    %endenv
