@@ -471,7 +471,27 @@ class JaguarCompiler extends Compiler implements CompilerContract
       }
       $this->currentHtmlBlock = [];
 
-      return call_user_func($this->customHtmlBlockProcessor[$block["name"]]["handler"], $lines, $this->currentIndent);
+      $outputlines = explode("\n", call_user_func($this->customHtmlBlockProcessor[$block["name"]]["handler"], $lines, $this->currentIndent));
+      $minindent = $this->currentIndent;
+      $i = 0;
+      $output = "";
+      foreach($outputlines as $line) {
+        $ilevel = $this->getIndentsBeforeLine($line);
+        if($i == 0 || $i == count($outputlines) - 2) {
+          while($ilevel < $minindent-1) {
+            $line = " " . $line;
+            $ilevel = $this->getIndentsBeforeLine($line);
+          }
+        } else {
+          while($ilevel < $minindent) {
+            $line = " " . $line;
+            $ilevel = $this->getIndentsBeforeLine($line);
+          }
+        }
+        $i++;
+        $output .= "$line\n";
+      }
+      return $output;
     }
 
     protected function createTabBlock($variable, $type = "html")

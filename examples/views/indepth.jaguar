@@ -13,6 +13,7 @@
     @scss
       $color: #abc;
       div { color: lighten($color, 20%); }
+      .title {color: $color;}
   @body
     @h1[class: "title"] Indepth Example
 
