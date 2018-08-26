@@ -77,6 +77,7 @@ class Jaguar
           $output = "<style>\n";
           $scsslines = implode("\n", $lines);
           $scss = new Compiler();
+          $scss->setFormatter("Leafo\ScssPhp\Formatter\Compressed");
           $output .= $scss->compile($scsslines) . "\n";
           $output .= "</style>\n";
           return "$output";
