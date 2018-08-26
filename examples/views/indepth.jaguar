@@ -74,3 +74,9 @@
     %foreach($names as $name)
       @p Hello, {{ $name["first"] }}
     %endforeach
+
+    %php
+      $name = "Jeff";
+      $name .= " Doe";
+      echo $name;
+    %endphp

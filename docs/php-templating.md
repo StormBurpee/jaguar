@@ -189,6 +189,69 @@ compiles to,
 <?php endforeach; ?>
 ```
 
+#### While loops
+While loops are also implemented into a jaguar directive.
+```jaguar
+%while(true)
+  @p looping forever!
+%endwhile
+```
+
+#### Break and Continue
+Break and continue are implemented into Jaguar as core directives. These can also be conditional, meaning that when the condition is true, it will break or continue.
+```jaguar
+%for($i = 0; $i < 10; $i++)
+  %continue($i == 3)
+  @p {{ $i }}
+  %break($i == 5)
+%endfor
+%for($i = 0; $i < 10; $i++)
+  %continue
+$endfor
+%for($i = 0; $i < 10; $i++)
+  %break
+%endfor
+```
+
 ## Raw Php
+For cases when you need to write just pure PHP code, Jaguar has two directives implemented into the core. The `%php` directive is used for when you need to write multiple lines of PHP code, and the `%eval` directive is used for evaluating one line of php code.
+
+#### Php
+```jaguar
+%php
+  $name = "Jeff";
+  $name .= " Doe";
+  echo $name;
+%endphp
+```
+Compiles to,
+```html
+<?php
+  $name = "Jeff";
+  $name .= " Doe";
+  echo $name;
+ ?>
+```
+
+#### Eval and E
+Jaguar provides the `%eval` and it's alias `%e` directive to eval one line of php code.
+```jaguar
+%e($name = "Jeff")
+{-- is the same as --}
+%eval($name = "Jeff")
+```
 
 ## Variables
+To quickly assign, and unassign variables, jaguar provides the `%set` and `%unset` directives, so that you don't need to keep writing `%eval or %php`
+
+#### Set
+```jaguar
+%set($name, "Jeff")
+%set($names, ["Bob", "Jeff", "John", "Samantha", "Chloe", "Louise"])
+```
+
+#### Unset
+```jaguar
+%unset($name)
+%unset($names)
+```
