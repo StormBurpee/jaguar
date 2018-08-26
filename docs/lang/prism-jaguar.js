@@ -30,7 +30,7 @@
 
 	Prism.languages.insertBefore('jaguar', 'keyword', {
 		'delimiter': {
-			pattern: /\%endphp|\%(?:php)?/i,
+			pattern: /\%endphp|\%(?:if|unless|elseif|else|endif|endunless|isset|endisset|switch|case|default|endswitch|json|for|foreach|break|continue|endfor|endforeach|while|endwhile|php|eval|set|unset)?/i,
 			alias: 'important'
 		},
 		'variable': /\$+(?:\w+\b|(?={))/i,
