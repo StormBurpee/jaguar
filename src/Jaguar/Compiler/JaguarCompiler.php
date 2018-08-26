@@ -472,7 +472,7 @@ class JaguarCompiler extends Compiler implements CompilerContract
             $value = Str::substr($value, 1, -1);
         }
 
-        return call_user_func($this->customDirectives[$name], trim($value));
+        return call_user_func($this->customDirectives[$name]["handler"], trim($value));
     }
 
     protected function callCustomHtmlDirective($name, $value, $properties)
@@ -607,9 +607,9 @@ class JaguarCompiler extends Compiler implements CompilerContract
         */
     }
 
-    public function directive($name, callable $handler)
+    public function directive($name, callable $handler, $block = false)
     {
-        $this->customDirectives[$name] = $handler;
+        $this->customDirectives[$name] = ["handler" => $handler, "block" => $block];
     }
 
     public function htmlDirective($name, callable $handler, $block = false)

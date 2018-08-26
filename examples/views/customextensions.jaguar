@@ -16,3 +16,7 @@
           @td Body 1
           @td Body 2
     @tb
+      @thead[class: "table-head"]
+        @tr
+          @th Head 1
+          @th Head 2
