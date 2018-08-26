@@ -49,4 +49,15 @@ class Extensions
     {
         Jaguar::getInstance()->getCompiler()->htmlBlockProcessor($name, $handler);
     }
+
+    /**
+     * Registers a custom conditional directive
+     * @param  string   $name
+     * @param  callable $handler
+     * @return void
+     */
+    public static function registerIf($name, callable $handler)
+    {
+        Jaguar::getInstance()->getCompiler()->if($name, $handler);
+    }
 }

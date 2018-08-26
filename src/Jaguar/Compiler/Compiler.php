@@ -58,7 +58,8 @@ abstract class Compiler
      */
     public function getCompiledPath($path)
     {
-        return $this->compilePath.'/'.sha1($path).'.php';
+        $name = $this->files->name($path);
+        return $this->compilePath.'/'.$name.'.php';
     }
 
     /**

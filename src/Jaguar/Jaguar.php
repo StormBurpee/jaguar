@@ -179,4 +179,9 @@ class Jaguar
         }
         return static::$instance;
     }
+
+    public static function check($name, ...$parameters)
+    {
+      return static::getInstance()->getCompiler()->check($name, $parameters);
+    }
 }

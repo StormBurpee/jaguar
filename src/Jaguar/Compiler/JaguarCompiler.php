@@ -216,15 +216,15 @@ class JaguarCompiler extends Compiler implements CompilerContract
             $needsIndentChange = false;
             $indentAmm = 0;
 
-            if(isset($this->currentHtmlBlock["name"]) && $tabcount <= $this->currentHtmlBlock["indents"]) {
-              $result .= $this->endBlockProcessor();
-              $result .= "\n";
+            if (isset($this->currentHtmlBlock["name"]) && $tabcount <= $this->currentHtmlBlock["indents"]) {
+                $result .= $this->endBlockProcessor();
+                $result .= "\n";
             }
 
-            if(isset($this->currentHtmlBlock["name"])) {
-              $this->currentLine++;
-              $this->currentIndent = $tabcount;
-              continue;
+            if (isset($this->currentHtmlBlock["name"])) {
+                $this->currentLine++;
+                $this->currentIndent = $tabcount;
+                continue;
             }
 
             if ($this->currentIndent != $tabcount) {
@@ -234,9 +234,9 @@ class JaguarCompiler extends Compiler implements CompilerContract
                         $this->currentIndent--;
                     }
                 } else {
-                    if($tabcount > count($this->tabBlocks)) {
-                      $needsIndentChange = true;
-                      $indentAmm = count($this->tabBlocks);
+                    if ($tabcount > count($this->tabBlocks)) {
+                        $needsIndentChange = true;
+                        $indentAmm = count($this->tabBlocks);
                     }
                 }
 
@@ -265,10 +265,10 @@ class JaguarCompiler extends Compiler implements CompilerContract
             $result = $this->addFooters($result);
         }
 
-        if(count($this->tabBlocks) > 0) {
-          while(count($this->tabBlocks) > 0) {
-            $this->closeLastTabBlock($result);
-          }
+        if (count($this->tabBlocks) > 0) {
+            while (count($this->tabBlocks) > 0) {
+                $this->closeLastTabBlock($result);
+            }
         }
 
         $result = $this->stripEmptyLines($result);
@@ -278,34 +278,32 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
     protected function stripEmptyLines($value)
     {
-      return preg_replace('/\n\s*\n/', "\n", $value);
+        return preg_replace('/\n\s*\n/', "\n", $value);
     }
 
     protected function convertAliases($value)
     {
-      foreach($this->customAliases as $key => $alias)
-      {
-        $value = preg_replace_callback("/(?<!%)%$key(.+?)/s", function($matches) use($alias) {
-          if(isset($matches) && ($matches[1] == "(" || $matches[1] == ' ' || $matches[1] == PHP_EOL)) {
-            return "%".$alias.$matches[1];
-          } else {
-            return $matches[0];
-          }
-        }, $value);
-      }
+        foreach ($this->customAliases as $key => $alias) {
+            $value = preg_replace_callback("/(?<!%)%$key(.+?)/s", function ($matches) use ($alias) {
+                if (isset($matches) && ($matches[1] == "(" || $matches[1] == ' ' || $matches[1] == PHP_EOL)) {
+                    return "%".$alias.$matches[1];
+                } else {
+                    return $matches[0];
+                }
+            }, $value);
+        }
 
-      foreach($this->customHtmlAliases as $key => $alias)
-      {
-        $value = preg_replace_callback("/(?<!@)@$key(.+?)/s", function($matches) use($alias) {
-          if($matches[1] == "[" || $matches[1] == ' ' || $matches[1] == PHP_EOL) {
-            return "@".$alias.$matches[1];
-          } else {
-            return $matches[0];
-          }
-        }, $value);
-      }
+        foreach ($this->customHtmlAliases as $key => $alias) {
+            $value = preg_replace_callback("/(?<!@)@$key(.+?)/s", function ($matches) use ($alias) {
+                if ($matches[1] == "[" || $matches[1] == ' ' || $matches[1] == PHP_EOL) {
+                    return "@".$alias.$matches[1];
+                } else {
+                    return $matches[0];
+                }
+            }, $value);
+        }
 
-      return $value;
+        return $value;
     }
 
     /**
@@ -439,59 +437,57 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
         $safeTag = implode(" ", $tags);
 
-        if(isset($this->customHtmlBlockProcessor[$match[1]]) && !isset($this->currentHtmlBlock["name"])) {
-          return $this->startBlockProcessor($match[1]);
-        }
-        elseif(isset($this->customHtmlDirectives[$match[1]])) {
-          return $this->callCustomHtmlDirective($match[1], $match, $safeTag);
+        if (isset($this->customHtmlBlockProcessor[$match[1]]) && !isset($this->currentHtmlBlock["name"])) {
+            return $this->startBlockProcessor($match[1]);
+        } elseif (isset($this->customHtmlDirectives[$match[1]])) {
+            return $this->callCustomHtmlDirective($match[1], $match, $safeTag);
         } else {
-          if ($this->getIndentsBeforeLine($this->peekNextLine()) > $this->currentIndent) {
-              $this->createTabBlock($match[1]);
-              return count($tags) > 0 ? "<$match[1] $safeTag>" : "<$match[1]>";
-          }
+            if ($this->getIndentsBeforeLine($this->peekNextLine()) > $this->currentIndent) {
+                $this->createTabBlock($match[1]);
+                return count($tags) > 0 ? "<$match[1] $safeTag>" : "<$match[1]>";
+            }
 
-          return count($tags) > 0 ? "<$match[1] $safeTag>$match[6]</$match[1]>" : "<$match[1]>$match[6]</$match[1]>";
+            return count($tags) > 0 ? "<$match[1] $safeTag>$match[6]</$match[1]>" : "<$match[1]>$match[6]</$match[1]>";
         }
     }
 
     protected function startBlockProcessor($name)
     {
-      $this->currentHtmlBlock = ["name" => $name, "startline" => $this->currentLine + 1, "indents" => $this->currentIndent];
-      return "";
+        $this->currentHtmlBlock = ["name" => $name, "startline" => $this->currentLine + 1, "indents" => $this->currentIndent];
+        return "";
     }
 
     protected function endBlockProcessor()
     {
-      $block = $this->currentHtmlBlock;
+        $block = $this->currentHtmlBlock;
 
-      $lines = [];
-      for($i = $block["startline"]; $i < $this->currentLine; $i++)
-      {
-        $lines[] = $this->lines[$i];
-      }
-      $this->currentHtmlBlock = [];
-
-      $outputlines = explode("\n", call_user_func($this->customHtmlBlockProcessor[$block["name"]]["handler"], $lines, $this->currentIndent));
-      $minindent = $this->currentIndent;
-      $i = 0;
-      $output = "";
-      foreach($outputlines as $line) {
-        $ilevel = $this->getIndentsBeforeLine($line);
-        if($i == 0 || $i == count($outputlines) - 2) {
-          while($ilevel < $minindent-1) {
-            $line = " " . $line;
-            $ilevel = $this->getIndentsBeforeLine($line);
-          }
-        } else {
-          while($ilevel < $minindent) {
-            $line = " " . $line;
-            $ilevel = $this->getIndentsBeforeLine($line);
-          }
+        $lines = [];
+        for ($i = $block["startline"]; $i < $this->currentLine; $i++) {
+            $lines[] = $this->lines[$i];
         }
-        $i++;
-        $output .= "$line\n";
-      }
-      return $output;
+        $this->currentHtmlBlock = [];
+
+        $outputlines = explode("\n", call_user_func($this->customHtmlBlockProcessor[$block["name"]]["handler"], $lines, $this->currentIndent));
+        $minindent = $this->currentIndent;
+        $i = 0;
+        $output = "";
+        foreach ($outputlines as $line) {
+            $ilevel = $this->getIndentsBeforeLine($line);
+            if ($i == 0 || $i == count($outputlines) - 2) {
+                while ($ilevel < $minindent-1) {
+                    $line = " " . $line;
+                    $ilevel = $this->getIndentsBeforeLine($line);
+                }
+            } else {
+                while ($ilevel < $minindent) {
+                    $line = " " . $line;
+                    $ilevel = $this->getIndentsBeforeLine($line);
+                }
+            }
+            $i++;
+            $output .= "$line\n";
+        }
+        return $output;
     }
 
     protected function createTabBlock($variable, $type = "html")
@@ -546,19 +542,19 @@ class JaguarCompiler extends Compiler implements CompilerContract
     {
         $directive = $this->customHtmlDirectives[$name];
 
-        if($directive["block"] == true) {
-          $result = call_user_func($directive["handler"], $value, $properties);
-          $resultReturn = $this->getTagName($result);
-          $this->createTabBlock($resultReturn, "html");
-          return $result;
+        if ($directive["block"] == true) {
+            $result = call_user_func($directive["handler"], $value, $properties);
+            $resultReturn = $this->getTagName($result);
+            $this->createTabBlock($resultReturn, "html");
+            return $result;
         } else {
-          return call_user_func($directive["handler"], $value, $properties);
+            return call_user_func($directive["handler"], $value, $properties);
         }
     }
 
     protected function getTagName($tag)
     {
-      return explode(">", explode(" ", explode("<", $tag)[1])[0])[0];
+        return explode(">", explode(" ", explode("<", $tag)[1])[0])[0];
     }
 
     public function stripParentheses($expression)
@@ -595,36 +591,31 @@ class JaguarCompiler extends Compiler implements CompilerContract
      * @param  string   $name
      * @param  callable $callback
      * @return void
-     * @todo Implement this function, as the Standalone Jaguar Compiler has not got this implemented from the 'Decoupled Laravel' Jaguar Compiler.
      */
     public function if($name, callable $callback)
     {
-        // TODO: this
-      //
-      /*
-        How this works in the 'Decoupled Laravel' version of Jaguar
         $this->conditions[$name] = $callback;
 
         $this->directive($name, function ($expression) use ($name) {
             return $expression !== ''
-                ? "<?php if (\Jaguar\Support\Facades\Jaguar::check('{$name}', {$expression})): ?>"
-                : "<?php if (\Jaguar\Support\Facades\Jaguar::check('{$name}')): ?>";
+              ? "<?php if (\Jaguar\Jaguar::check('{$name}', {$expression})): ?>"
+              : "<?php if (\Jaguar\Jaguar::check('{$name}')): ?>";
         });
 
         $this->directive('else'.$name, function ($expression) use ($name) {
             return $expression !== ''
-                ? "<?php elseif (\Jaguar\Support\Facades\Jaguar::check('{$name}', {$expression})): ?>"
-                : "<?php elseif (\Jaguar\Support\Facades\Jaguar::check('{$name}')): ?>";
+              ? "<?php elseif (\Jaguar\Jaguar::check('{$name}', {$expression})): ?>"
+              : "<?php elseif (\Jaguar\Jaguar::check('{$name}')): ?>";
         });
 
         $this->directive('end'.$name, function () {
             return '<?php endif; ?>';
         });
-      */
     }
 
     public function check($name, ...$parameters)
     {
+        var_dump($this->conditions);
         return call_user_func($this->conditions[$name], ...$parameters);
     }
 
@@ -686,17 +677,17 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
     public function alias($alias, $original)
     {
-      $this->customAliases[$alias] = $original;
+        $this->customAliases[$alias] = $original;
     }
 
     public function htmlAlias($alias, $original)
     {
-      $this->customHtmlAliases[$alias] = $original;
+        $this->customHtmlAliases[$alias] = $original;
     }
 
     public function htmlBlockProcessor($name, callable $handler)
     {
-      $this->customHtmlBlockProcessor[$name] = ["handler" => $handler];
+        $this->customHtmlBlockProcessor[$name] = ["handler" => $handler];
     }
 
     public function getCustomDirectives()
