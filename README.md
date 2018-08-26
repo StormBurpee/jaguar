@@ -170,6 +170,7 @@ When extending HTML, Jaguar needs to know if the extension can be compiled as a 
 <div> <!-- can have children, Therefore is a block. -->
 ```
 The `Extensions::registerCompilerHtmlDirective` takes three parameters, the third being optional and defaults to false.   
+
 | parameters | Description     |
 | :------------- | :------------- |
 | Parameter 1 - $name    | The name of the custom directive, i.e 'tbl', gets picked up when parsing '@tbl' |
@@ -178,6 +179,7 @@ The `Extensions::registerCompilerHtmlDirective` takes three parameters, the thir
 
 The '$handler' that gets called takes two parameters, the $expression and the $properties.  
 The $expression is an array of useful information relating to the tag that has been processed.   
+
 | $expression index | Description    |
 | :-------------    | :------------- |
 | `$expression[0]`  | Full match, i.e '@div[class: "divclass"] value'       |
