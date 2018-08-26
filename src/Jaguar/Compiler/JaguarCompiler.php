@@ -54,6 +54,12 @@ class JaguarCompiler extends Compiler implements CompilerContract
     protected $customHtmlAliases = [];
 
     /**
+     * All registered custom Jaguar HTML BLock Processors
+     * @var array
+     */
+    protected $customHtmlBlockProcessor = [];
+
+    /**
      * All registered custom Jaguar PHP condition handlers.
      * @var array
      */
@@ -150,6 +156,12 @@ class JaguarCompiler extends Compiler implements CompilerContract
      */
     protected $lines =  [];
 
+    /**
+     * Current html block being processed.
+     * @var array
+     */
+    protected $currentHtmlBlock = [];
+
     public function compile($path = null)
     {
         if ($path) {
@@ -203,6 +215,17 @@ class JaguarCompiler extends Compiler implements CompilerContract
             $tabcount = $this->getIndentsBeforeLine($line);
             $needsIndentChange = false;
             $indentAmm = 0;
+
+            if(isset($this->currentHtmlBlock["name"]) && $tabcount <= $this->currentHtmlBlock["indents"]) {
+              $result .= $this->endBlockProcessor();
+              $result .= "\n";
+            }
+
+            if(isset($this->currentHtmlBlock["name"])) {
+              $this->currentLine++;
+              $this->currentIndent = $tabcount;
+              continue;
+            }
 
             if ($this->currentIndent != $tabcount) {
                 if ($tabcount < count($this->tabBlocks)) {
@@ -416,7 +439,10 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
         $safeTag = implode(" ", $tags);
 
-        if(isset($this->customHtmlDirectives[$match[1]])) {
+        if(isset($this->customHtmlBlockProcessor[$match[1]]) && !isset($this->currentHtmlBlock["name"])) {
+          return $this->startBlockProcessor($match[1]);
+        }
+        elseif(isset($this->customHtmlDirectives[$match[1]])) {
           return $this->callCustomHtmlDirective($match[1], $match, $safeTag);
         } else {
           if ($this->getIndentsBeforeLine($this->peekNextLine()) > $this->currentIndent) {
@@ -426,6 +452,26 @@ class JaguarCompiler extends Compiler implements CompilerContract
 
           return count($tags) > 0 ? "<$match[1] $safeTag>$match[6]</$match[1]>" : "<$match[1]>$match[6]</$match[1]>";
         }
+    }
+
+    protected function startBlockProcessor($name)
+    {
+      $this->currentHtmlBlock = ["name" => $name, "startline" => $this->currentLine + 1, "indents" => $this->currentIndent];
+      return "";
+    }
+
+    protected function endBlockProcessor()
+    {
+      $block = $this->currentHtmlBlock;
+
+      $lines = [];
+      for($i = $block["startline"]; $i < $this->currentLine; $i++)
+      {
+        $lines[] = $this->lines[$i];
+      }
+      $this->currentHtmlBlock = [];
+
+      return call_user_func($this->customHtmlBlockProcessor[$block["name"]]["handler"], $lines, $this->currentIndent);
     }
 
     protected function createTabBlock($variable, $type = "html")
@@ -626,6 +672,11 @@ class JaguarCompiler extends Compiler implements CompilerContract
     public function htmlAlias($alias, $original)
     {
       $this->customHtmlAliases[$alias] = $original;
+    }
+
+    public function htmlBlockProcessor($name, callable $handler)
+    {
+      $this->customHtmlBlockProcessor[$name] = ["handler" => $handler];
     }
 
     public function getCustomDirectives()

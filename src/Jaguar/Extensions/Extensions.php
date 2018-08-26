@@ -38,4 +38,15 @@ class Extensions
     {
         Jaguar::getInstance()->getCompiler()->htmlAlias($alias, $original);
     }
+
+    /**
+     * Registers a custom block processor for HTML.
+     * @param  string   $name
+     * @param  callable $handler
+     * @return void
+     */
+    public static function registerHtmlBlockProcessor($name, callable $handler)
+    {
+        Jaguar::getInstance()->getCompiler()->htmlBlockProcessor($name, $handler);
+    }
 }

@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use Jaguar\Compiler\JaguarCompiler;
 use Jaguar\Extensions\Extensions;
 use Jaguar\Support\Filesystem\Filesystem;
+use Leafo\ScssPhp\Compiler;
 
 class Jaguar
 {
@@ -71,6 +72,22 @@ class Jaguar
         });
 
         Extensions::registerCompilerAlias('e', 'eval');
+
+        Extensions::registerHtmlBlockProcessor("scss", function($lines, $indent) {
+          $output = "";
+          for($i = 0; $i < $indent-1; $i++) {
+            $output .= "\t";
+          }
+          $output .= "<style>\n";
+          $scsslines = implode("\n", $lines);
+          $scss = new Compiler();
+          $output .= $scss->compile($scsslines) . "\n";
+          for($i = 0; $i < $indent-1; $i++) {
+            $output .= "\t";
+          }
+          $output .= "</style>\n";
+          return "$output";
+        });
     }
 
     /**
