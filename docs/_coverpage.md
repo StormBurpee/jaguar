@@ -2,9 +2,9 @@
 
 > A fast templating language, to make writing PHP and/or Html faster.
 
-* Simple and lightweight (~19kB gzipped)
-* No statically built html files
-* Multiple themes
+* Fast templating engine
+* Simple and lightweight
+* High Extensibility
 
 [GitHub](https://github.com/jaguar-language/jaguar/)
 [Get Started](#jaguar-templating-language)
