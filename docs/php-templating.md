@@ -159,6 +159,35 @@ The respective JSON output would be,
 ```
 
 ## Loops
+Jaguar provides base directives for the `for, foreach and while` loops. Jaguar also has functionality for `break and continue`. The `break` and `continue` functions also can be conditional, which stops you from having to write your own `if` functions.
+
+#### For loops
+```jaguar
+%for($i = 0; $i < 10; $i++)
+  @p {{ $i }}
+%endfor
+```
+Compiles to,
+```html
+<?php for($i = 0; $i < 10; $i++): ?>
+  <p><?php echo $i; ?></p>
+<?php endfor; ?>
+```
+
+#### Foreach loops
+```jaguar
+%set($names, [["first"=>"Jeff", "last"=>"Johns"], ["first"=>"Bob", "last"=>"Dylan"]])
+%foreach($names as $name)
+  @p Hello, {{ $name["first"] }}
+%endforeach
+```
+compiles to,
+```html
+<?php $names = [["first"=>"Jeff", "last"=>"Johns"], ["first"=>"Bob", "last"=>"Dylan"]]; ?>
+<?php foreach($names as $name): ?>
+  <p>Hello, <?php echo $name["first"]; ?></p>
+<?php endforeach; ?>
+```
 
 ## Raw Php
 

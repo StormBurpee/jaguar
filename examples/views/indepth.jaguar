@@ -65,3 +65,12 @@
 
     %set($names, [["first"=>"Jeff", "last"=>"Johns"], ["first"=>"Bob", "last"=>"Dylan"]])
     %json($names)
+
+    %for($i = 0; $i < 10; $i++)
+      @p {{ $i }}
+    %endfor
+
+    %set($names, [["first"=>"Jeff", "last"=>"Johns"], ["first"=>"Bob", "last"=>"Dylan"]])
+    %foreach($names as $name)
+      @p Hello, {{ $name["first"] }}
+    %endforeach

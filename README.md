@@ -14,3 +14,49 @@ Jaguar comes implemented with a few handy modules as well, for example compiling
 
 ## Documentation
 For all documentation, please see the [Documentation](https://stormburpee.gitlab.io/jaguar/#/)
+
+## Hello World - Basic Example
+```jaguar
+@doc5
+@html
+  @head
+    @title Hello, World!
+  @body
+    @h1 Hello, World!
+```
+Which would compile to,
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+  </head>
+  <body>
+    <h1>Hello, World!</h1>
+  </body>
+</html>
+```
+
+## Hello World - With PHP Compiler Example
+```jaguar
+@doc5
+@html
+  @head
+    @title Hello, World!
+  @body
+    %set($name, "John")
+    <h1>Hello, {{ $name }}</h1>
+```
+Which would compile to,
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+  </head>
+  <body>
+    <?php $name = "John"; ?>
+    <h1>Hello, <?php echo $name; ?></h1>
+  </body>
+</html>
+```

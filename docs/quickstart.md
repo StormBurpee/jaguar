@@ -33,3 +33,49 @@ $jaguar->compileDirectory('./src/'); // Compiles only files in ./src/*.(jaguar|j
 
 ## Basic CLI Usage
 **Implement this when the CLI is created.**
+
+## Hello World - Basic
+```jaguar
+@doc5
+@html
+  @head
+    @title Hello, World!
+  @body
+    @h1 Hello, World!
+```
+Which would compile to,
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+  </head>
+  <body>
+    <h1>Hello, World!</h1>
+  </body>
+</html>
+```
+
+## Hello World - With PHP Compiler
+```jaguar
+@doc5
+@html
+  @head
+    @title Hello, World!
+  @body
+    %set($name, "John")
+    <h1>Hello, {{ $name }}</h1>
+```
+Which would compile to,
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+  </head>
+  <body>
+    <?php $name = "John"; ?>
+    <h1>Hello, <?php echo $name; ?></h1>
+  </body>
+</html>
+```
