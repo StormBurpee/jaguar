@@ -25,5 +25,7 @@
     "psr-4": {
       "Jaguar\\": "src/Jaguar/"
     }
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
