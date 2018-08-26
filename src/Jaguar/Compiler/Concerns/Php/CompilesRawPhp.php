@@ -17,9 +17,4 @@ trait CompilesRawPhp
     {
       return "<?php {$expression}; ?>";
     }
-
-    protected function compileUnset($expression)
-    {
-        return "<?php unset{$expression}; ?>";
-    }
 }

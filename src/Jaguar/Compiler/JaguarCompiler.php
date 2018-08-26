@@ -14,7 +14,8 @@ class JaguarCompiler extends Compiler implements CompilerContract
         Concerns\Php\CompilesEchos,
         Concerns\Php\CompilesJson,
         Concerns\Php\CompilesLoops,
-        Concerns\Php\CompilesRawPhp;
+        Concerns\Php\CompilesRawPhp,
+        Concerns\Php\CompilesVariables;
 
     /**
      * All registered Jaguar PHP Extensions.

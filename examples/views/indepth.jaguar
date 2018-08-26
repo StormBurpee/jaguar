@@ -13,8 +13,9 @@
   @body
     @h1[class: "title"] Indepth Example
 
-    %e($name = "World")
+    %set($name, "World");
     {{ "Hello, $name!" }}
+    %unset($name);
 
     %if(1 == 1)
       @h2 1 == 1
