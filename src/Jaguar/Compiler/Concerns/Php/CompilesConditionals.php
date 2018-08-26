@@ -50,7 +50,7 @@ trait CompilesConditionals
     {
         $this->firstCaseInSwitch = true;
 
-        return "<?php switch{$expression}:>";
+        return "<?php switch{$expression}:";
     }
 
     protected function compileCase($expression)

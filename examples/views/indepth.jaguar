@@ -46,3 +46,22 @@
       @p {{$i}}
       %break($i == 5)
     %endfor
+
+    %switch($name)
+      %case("Jeff")
+        @h1 Hi Jeff!
+        %break
+      %case("Bob")
+        @h1 Hi Bob!
+        %break
+      %default
+        @h1 Default case
+        %break
+    %endswitch
+
+    %isset($name)
+      @h1 Name is set!
+    %endisset
+
+    %set($names, [["first"=>"Jeff", "last"=>"Johns"], ["first"=>"Bob", "last"=>"Dylan"]])
+    %json($names)

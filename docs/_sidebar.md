@@ -8,9 +8,9 @@
 * Usage
   * [Jaguar Class](jaguar.md)
   * [Indepth Usage](usage.md)
-  * [Templating functions](templating.md)
-    * [PHP](php-templating.md)
-    * [HTML](html-templating.md)
+  * [Templating](templating.md)
+  * [Core Templating Functions](php-templating.md)
+  * [Core HTML Templating Functions](html-templating.md)
 
 * Extending Jaguar
   * [Basic Overview](basic-expanding.md)
